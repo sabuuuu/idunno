@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useQuestionFlow } from "~/hooks/use-question-flow";
+import { useQuestionFlow } from "~/features/question-flow/hooks/use-question-flow";
 import { QuestionCard } from "./question-card";
 import { ProgressDots } from "./progress-dots";
 import type { Question } from "~/types/db";

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FlowController } from "~/components/question-flow/flow-controller";
-import { getQuestions } from "~/server/questions";
+import { FlowController } from "~/features/question-flow/components/flow-controller";
+import { getQuestions } from "~/features/question-flow/server/questions";
 
 export const Route = createFileRoute("/ask")({
   loader: () => getQuestions(),
