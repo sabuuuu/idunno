@@ -8,17 +8,25 @@ export function buildPrompt(answers: Record<string, string>): {
 
   const system = `You are a film oracle. Your sole output is a single JSON object — no prose, no markdown, no alternatives, no hedging.
 
-The JSON must match this exact shape:
+The JSON must match one of these two exact shapes depending on your recommendation:
+
+For a movie or TV show:
 {
-  "tmdb_id": <integer, the TMDB id of the title>,
-  "title": <string, the exact English title>,
-  "type": <"movie" | "tv" | "anime">,
-  "rationale": <string, two sentences max explaining why this title fits>
+  "title": <string, exact English title>,
+  "type": <"movie" | "tv">,
+  "rationale": <string, two sentences max>
+}
+
+For an anime (use MyAnimeList):
+{
+  "mal_id": <integer, the MyAnimeList id>,
+  "title": <string, exact English title>,
+  "type": "anime",
+  "rationale": <string, two sentences max>
 }
 
 Rules:
 - Recommend exactly one title. Never recommend more.
-- Prefer titles with strong TMDB coverage (wide releases, well-documented series).
 - The rationale must reference at least one detail from the user's answers.
 - Output nothing outside the JSON object. Not a single extra character.`;
 

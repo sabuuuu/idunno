@@ -16,7 +16,7 @@ export const recommend = createServerFn({ method: "POST" })
       .insert(picks)
       .values({
         answers: data.answers,
-        resultTmdbId: llmResult.tmdb_id,
+        resultMalId: llmResult.type === "anime" ? llmResult.mal_id : null,
         resultTitle: llmResult.title,
         resultType: llmResult.type,
         rationale: llmResult.rationale,
@@ -29,7 +29,7 @@ export const recommend = createServerFn({ method: "POST" })
 
     return {
       sessionId: pick.id,
-      tmdbId: llmResult.tmdb_id,
+      malId: llmResult.type === "anime" ? llmResult.mal_id : undefined,
       title: llmResult.title,
       type: llmResult.type,
       rationale: llmResult.rationale,

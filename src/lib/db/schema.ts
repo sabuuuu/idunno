@@ -20,10 +20,11 @@ export const questions = pgTable("questions", {
 export const picks = pgTable("picks", {
   id: uuid("id").primaryKey().defaultRandom(),
   answers: jsonb("answers").$type<Record<string, string>>().notNull(),
-  resultTmdbId: integer("result_tmdb_id"),
+  resultImdbId: text("result_imdb_id"),
+  resultMalId: integer("result_mal_id"),
   resultTitle: text("result_title"),
-  resultType: text("result_type"), // "movie" | "tv" | "anime"
+  resultType: text("result_type"),
   rationale: text("rationale"),
-  feedback: smallint("feedback"), // -1 | null | 1
+  feedback: smallint("feedback"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

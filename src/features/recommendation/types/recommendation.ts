@@ -9,7 +9,8 @@ export type RecommendInput = z.infer<typeof RecommendInputSchema>;
 
 export interface RecommendResult {
   sessionId: string;
-  tmdbId: number;
+  imdbId?: string;
+  malId?: number;
   title: string;
   type: "movie" | "tv" | "anime";
   rationale: string;
