@@ -10,6 +10,7 @@ export interface QuestionFlowState {
   currentIndex: number; // 0-based index into questions array
   answers: Record<string, string>; // questionId → selected option
   selectAnswer: (questionId: string, option: string) => void;
+  goToNext: () => void;
   reset: () => void;
 }
 
@@ -19,9 +20,10 @@ export function useQuestionFlow(questions: Question[]): QuestionFlowState {
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   function selectAnswer(questionId: string, option: string) {
-    const nextAnswers = { ...answers, [questionId]: option };
-    setAnswers(nextAnswers);
+    setAnswers({ ...answers, [questionId]: option });
+  }
 
+  function goToNext() {
     const nextIndex = currentIndex + 1;
 
     if (nextIndex < questions.length) {
@@ -38,5 +40,5 @@ export function useQuestionFlow(questions: Question[]): QuestionFlowState {
     setAnswers({});
   }
 
-  return { step, currentIndex, answers, selectAnswer, reset };
+  return { step, currentIndex, answers, selectAnswer, goToNext, reset };
 }

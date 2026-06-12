@@ -9,12 +9,16 @@ interface QuestionCardProps {
   question: Question;
   selectedOption?: string;
   onSelect: (option: string) => void;
+  onNext: () => void;
+  isLastQuestion: boolean;
 }
 
 export function QuestionCard({
   question,
   selectedOption,
   onSelect,
+  onNext,
+  isLastQuestion,
 }: QuestionCardProps) {
   return (
     <Card className="w-full max-w-lg border-border/60 shadow-sm">
@@ -24,7 +28,7 @@ export function QuestionCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2.5">
-        {question.options.map((option) => {
+        {Array.from(new Set(question.options)).map((option) => {
           const isSelected = selectedOption === option;
           return (
             <button
@@ -44,6 +48,13 @@ export function QuestionCard({
             </button>
           );
         })}
+        <Button
+          onClick={onNext}
+          disabled={!selectedOption}
+          className="mt-2 w-full"
+        >
+          {isLastQuestion ? "Submit" : "Next"}
+        </Button>
       </CardContent>
     </Card>
   );
