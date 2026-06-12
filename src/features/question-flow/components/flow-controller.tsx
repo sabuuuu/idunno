@@ -11,14 +11,12 @@ interface FlowControllerProps {
   questions: Question[];
   onComplete: (answers: Record<string, string>) => void;
   isPending?: boolean;
-  error?: Error | null;
 }
 
 export function FlowController({
   questions,
   onComplete,
   isPending = false,
-  error = null,
 }: FlowControllerProps) {
   const { step, currentIndex, answers, selectAnswer, goToNext } =
     useQuestionFlow(questions);
@@ -58,12 +56,6 @@ export function FlowController({
         onNext={goToNext}
         isLastQuestion={isLastQuestion}
       />
-
-      {error && (
-        <p className="text-sm text-destructive text-center">
-          Something went wrong. Please try again.
-        </p>
-      )}
     </div>
   );
 }

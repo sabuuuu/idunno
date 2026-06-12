@@ -1,13 +1,16 @@
 import { openai } from "./client";
 import { buildPrompt } from "./prompt";
 import { LlmResponseSchema, type LlmResponse } from "~/types/llm";
+import { fetchSimilarPositivePicks } from "~/lib/db/queries/similar-picks";
 
 const MODEL = "gpt-4o";
 
 export async function getRecommendation(
   answers: Record<string, string>,
 ): Promise<LlmResponse> {
-  const { system, user } = buildPrompt(answers);
+  const examples = await fetchSimilarPositivePicks(answers).catch(() => []);
+
+  const { system, user } = buildPrompt(answers, examples);
 
   const response = await openai.chat.completions.create({
     model: MODEL,

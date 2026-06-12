@@ -1,15 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { db } from "~/lib/db";
 import { picks } from "~/lib/db/schema";
 import { searchOmdbTitle } from "~/lib/omdb/queries";
 import { fetchAnimeById } from "~/lib/jikan/queries";
 import type { MediaResult } from "~/features/recommendation/types/recommendation";
 
+const VALID_TYPES = new Set(["movie", "tv", "anime"]);
+
 export const getResult = createServerFn({ method: "GET" })
   .validator((sessionId: unknown) => {
-    if (typeof sessionId !== "string") throw new Error("Invalid sessionId");
-    return sessionId;
+    return z.string().uuid().parse(sessionId);
   })
   .handler(async ({ data: sessionId }): Promise<MediaResult> => {
     const [pick] = await db
@@ -18,11 +20,20 @@ export const getResult = createServerFn({ method: "GET" })
       .where(eq(picks.id, sessionId))
       .limit(1);
 
-    if (!pick) throw new Error("Result not found");
+    if (!pick) {
+      throw new Error("NOT_FOUND");
+    }
+
+    if (!pick.resultType || !VALID_TYPES.has(pick.resultType)) {
+      throw new Error("Result has an invalid type and cannot be displayed.");
+    }
 
     const type = pick.resultType as "movie" | "tv" | "anime";
 
-    if (type === "anime" && pick.resultMalId) {
+    if (type === "anime") {
+      if (!pick.resultMalId) {
+        throw new Error("Anime result is missing its MyAnimeList ID.");
+      }
       const anime = await fetchAnimeById(pick.resultMalId);
       return {
         title: anime.title_english ?? anime.title,
@@ -36,13 +47,16 @@ export const getResult = createServerFn({ method: "GET" })
       };
     }
 
-    if (!pick.resultTitle) throw new Error("Missing title on pick");
+    if (!pick.resultTitle) {
+      throw new Error("Result is missing a title and cannot be displayed.");
+    }
 
-    const omdb = await searchOmdbTitle(pick.resultTitle, type as "movie" | "tv");
+    const omdb = await searchOmdbTitle(pick.resultTitle, type);
+
     return {
       title: omdb.Title,
       year: omdb.Year,
-      poster: omdb.Poster,
+      poster: omdb.Poster !== "N/A" ? omdb.Poster : "",
       plot: omdb.Plot,
       genre: omdb.Genre,
       rating: omdb.imdbRating,

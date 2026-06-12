@@ -7,10 +7,15 @@ import { FeedbackInputSchema } from "~/features/feedback/types/feedback";
 export const submitFeedback = createServerFn({ method: "POST" })
   .validator((data: unknown) => FeedbackInputSchema.parse(data))
   .handler(async ({ data }) => {
-    await db
+    const result = await db
       .update(picks)
       .set({ feedback: data.value })
-      .where(eq(picks.id, data.sessionId));
+      .where(eq(picks.id, data.sessionId))
+      .returning({ id: picks.id });
+
+    if (result.length === 0) {
+      throw new Error("Could not save feedback — session not found.");
+    }
 
     return { ok: true };
   });

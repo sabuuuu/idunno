@@ -4,6 +4,8 @@ import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
 
+const isVercel = process.env.VERCEL === "1";
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -17,6 +19,8 @@ export default defineConfig({
       srcDirectory: 'src',
     }),
     viteReact(),
-    nitro(),
+    nitro({
+      preset: isVercel ? "vercel" : "node-server",
+    }),
   ],
 })

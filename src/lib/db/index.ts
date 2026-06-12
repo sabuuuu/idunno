@@ -2,8 +2,6 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-// In serverless/edge environments a new connection is made per invocation.
-// The singleton pattern here prevents multiple connections during local dev HMR.
 const globalForDb = globalThis as unknown as { _pgClient?: postgres.Sql };
 
 const client =

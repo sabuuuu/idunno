@@ -1,6 +1,7 @@
 "use client";
 
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import toast from "react-hot-toast";
 import { Button } from "~/components/ui/button";
 import { useFeedback } from "~/features/feedback/hooks/use-feedback";
 import { cn } from "~/lib/utils";
@@ -15,7 +16,13 @@ export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
   const submitted = data?.ok === true;
 
   function handleFeedback(value: 1 | -1) {
-    mutate({ sessionId, value });
+    mutate(
+      { sessionId, value },
+      {
+        onSuccess: () => toast.success("Thanks for the feedback."),
+        onError: (err) => toast.error(err.message),
+      },
+    );
   }
 
   if (submitted) {

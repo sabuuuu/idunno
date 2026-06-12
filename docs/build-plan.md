@@ -200,7 +200,7 @@ Call it from `__root.tsx` loader. If it resolves without throwing, phase 0 is do
 
 **goal**: app feels deliberate, not like a prototype.
 
-- loading state between Q3 and result — not a spinner, something theatrical (e.g. "consulting the oracle…" with a slow fade); use tanstack router's `<Await>` or pending component for the transition
+- loading state between Q3 and result; use tanstack router's `<Await>` or pending component for the transition
 - error state if LLM returns garbage or TMDB 404s — graceful fallback, not a white screen
 - `errorComponent` and `notFoundComponent` on the result route (file-based route options in TanStack Start)
 - mobile layout pass — the question flow should feel native on phone

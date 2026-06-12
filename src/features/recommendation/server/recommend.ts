@@ -12,17 +12,23 @@ import {
 export const recommend = createServerFn({ method: "POST" })
   .validator((data: unknown) => RecommendInputSchema.parse(data))
   .handler(async ({ data }): Promise<RecommendResult> => {
-    const llmResult = await getRecommendation(data.answers);
+    let llmResult;
+    try {
+      llmResult = await getRecommendation(data.answers);
+    } catch {
+      throw new Error("Could not generate a recommendation. Please try again.");
+    }
 
     let imdbId: string | undefined;
     let malId: number | undefined;
 
     if (llmResult.type === "anime") {
       malId = llmResult.mal_id;
-      await fetchAnimeById(malId);
+      await fetchAnimeById(malId).catch(() => undefined);
     } else {
-      const omdbResult = await searchOmdbTitle(llmResult.title, llmResult.type);
-      imdbId = omdbResult.imdbID;
+      await searchOmdbTitle(llmResult.title, llmResult.type)
+        .then((r) => { imdbId = r.imdbID; })
+        .catch(() => undefined);
     }
 
     const [pick] = await db
@@ -38,7 +44,7 @@ export const recommend = createServerFn({ method: "POST" })
       .returning({ id: picks.id });
 
     if (!pick) {
-      throw new Error("Failed to persist recommendation");
+      throw new Error("Failed to save recommendation. Please try again.");
     }
 
     return {
