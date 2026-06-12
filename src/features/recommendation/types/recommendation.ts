@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-/** Input schema for the recommend server function. */
 export const RecommendInputSchema = z.object({
   answers: z.record(z.string(), z.string()),
 });
@@ -12,6 +11,17 @@ export interface RecommendResult {
   imdbId?: string;
   malId?: number;
   title: string;
+  type: "movie" | "tv" | "anime";
+  rationale: string;
+}
+
+export interface MediaResult {
+  title: string;
+  year: string;
+  poster: string;
+  plot: string;
+  genre: string;
+  rating: string;
   type: "movie" | "tv" | "anime";
   rationale: string;
 }

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AskRouteImport } from './routes/ask'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResultSessionIdRouteImport } from './routes/result/$sessionId'
 
 const AskRoute = AskRouteImport.update({
   id: '/ask',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResultSessionIdRoute = ResultSessionIdRouteImport.update({
+  id: '/result/$sessionId',
+  path: '/result/$sessionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ask': typeof AskRoute
+  '/result/$sessionId': typeof ResultSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ask': typeof AskRoute
+  '/result/$sessionId': typeof ResultSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ask': typeof AskRoute
+  '/result/$sessionId': typeof ResultSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ask'
+  fullPaths: '/' | '/ask' | '/result/$sessionId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ask'
-  id: '__root__' | '/' | '/ask'
+  to: '/' | '/ask' | '/result/$sessionId'
+  id: '__root__' | '/' | '/ask' | '/result/$sessionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AskRoute: typeof AskRoute
+  ResultSessionIdRoute: typeof ResultSessionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/result/$sessionId': {
+      id: '/result/$sessionId'
+      path: '/result/$sessionId'
+      fullPath: '/result/$sessionId'
+      preLoaderRoute: typeof ResultSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AskRoute: AskRoute,
+  ResultSessionIdRoute: ResultSessionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
