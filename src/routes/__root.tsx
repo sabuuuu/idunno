@@ -11,19 +11,15 @@ import * as React from "react";
 import { Toaster } from "react-hot-toast";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
+import { RetroDesktop } from "~/components/RetroDesktop";
 import { healthCheck } from "~/server/health";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 30_000,
-    },
-    mutations: {
-      retry: 0,
-    },
+    queries:   { retry: 1,  staleTime: 30_000 },
+    mutations: { retry: 0 },
   },
 });
 
@@ -38,7 +34,23 @@ export const Route = createRootRoute({
           "Answer three questions. Get one perfect recommendation. No scrolling required.",
       }),
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      // Retro fonts — Space Mono (navbar, labels) + VT323 (display text)
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=VT323&family=DM+Sans:wght@400;500;700&display=swap",
+      },
+    ],
   }),
   loader: () => healthCheck(),
   errorComponent: DefaultCatchBoundary,
@@ -52,12 +64,29 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body>
         <QueryClientProvider client={queryClient}>
-          <Outlet />
-          <Toaster position="bottom-right" />
+          <RetroDesktop>
+            <Outlet />
+          </RetroDesktop>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                fontFamily: "'Space Mono', monospace",
+                fontSize: "12px",
+                border: "2px solid #B76E79",
+                boxShadow: "4px 4px 0px #B76E79",
+                borderRadius: "0",
+                background: "#F4ECEB",
+                color: "#1c1b1b",
+              },
+            }}
+          />
         </QueryClientProvider>
-        {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
+        {import.meta.env.DEV && (
+          <TanStackRouterDevtools position="bottom-right" />
+        )}
         <Scripts />
       </body>
     </html>

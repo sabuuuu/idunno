@@ -24,7 +24,9 @@ function AskPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background">
+    <main className="relative flex flex-col items-center justify-center py-12 px-4 min-h-full">
+      <div className="dot-grid absolute inset-0" aria-hidden="true" />
+      <div className="crt-overlay absolute inset-0" aria-hidden="true" />
       <FlowController
         questions={questions}
         onComplete={handleComplete}

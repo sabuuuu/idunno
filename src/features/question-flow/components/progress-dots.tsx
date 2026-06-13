@@ -1,24 +1,21 @@
-import { cn } from "~/lib/utils";
-
 interface ProgressDotsProps {
   total: number;
-  current: number; // 0-based
+  current: number; // 0-based index of current question
 }
 
 export function ProgressDots({ total, current }: ProgressDotsProps) {
   return (
-    <div className="flex items-center justify-center gap-2" aria-hidden="true">
+    <div className="flex justify-center gap-2">
       {Array.from({ length: total }).map((_, i) => (
-        <span
+        <div
           key={i}
-          className={cn(
-            "h-1.5 rounded-full transition-all duration-300",
-            i < current
-              ? "w-4 bg-primary"
-              : i === current
-                ? "w-4 bg-primary"
-                : "w-1.5 bg-muted-foreground/30",
-          )}
+          style={{
+            width: "12px",
+            height: "12px",
+            backgroundColor: i <= current ? "#b76e79" : "transparent",
+            border: "2px solid #b76e79",
+            transition: "background-color 0.2s",
+          }}
         />
       ))}
     </div>
