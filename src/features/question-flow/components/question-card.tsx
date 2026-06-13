@@ -10,7 +10,7 @@ interface QuestionCardProps {
   question: Question;
   questionNumber: number; // 1-based
   totalQuestions: number;
-  selectedOption?: string;
+  selectedOptions?: string[];
   onSelect: (option: string) => void;
   onBack: (() => void) | null; // null on first question
   onNext: () => void;
@@ -21,7 +21,7 @@ export function QuestionCard({
   question,
   questionNumber,
   totalQuestions,
-  selectedOption,
+  selectedOptions,
   onSelect,
   onBack,
   onNext,
@@ -51,6 +51,11 @@ export function QuestionCard({
             MOOD CHECK
           </span>
         </div>
+        {questionNumber > 1 && (
+          <p className="text-center text-[#7a4a52] mb-6" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px", letterSpacing: "0.1em" }}>
+            (SELECT UP TO 3)
+          </p>
+        )}
 
         {/* Question text */}
         <div className="mb-8 text-center px-2">
@@ -69,7 +74,7 @@ export function QuestionCard({
         {/* Answer rows */}
         <div className="flex flex-col gap-2 mb-8">
           {Array.from(new Set(question.options)).map((option, i) => {
-            const isSelected = selectedOption === option;
+            const isSelected = selectedOptions?.includes(option) ?? false;
             return (
               <button
                 key={option}
@@ -139,7 +144,7 @@ export function QuestionCard({
           {/* Next / Submit — filled pill */}
           <button
             onClick={onNext}
-            disabled={!selectedOption}
+            disabled={!selectedOptions || selectedOptions.length === 0}
             className="px-6 py-3 text-[#f4eceb] disabled:opacity-40 disabled:cursor-not-allowed"
             style={{
               fontFamily: "'Press Start 2P', monospace",
@@ -148,7 +153,7 @@ export function QuestionCard({
               borderRadius: "999px",
               backgroundColor: "#b76e79",
               border: "2px solid #7a4a52",
-              boxShadow: selectedOption ? "3px 3px 0px #7a4a52" : "none",
+              boxShadow: selectedOptions && selectedOptions.length > 0 ? "3px 3px 0px #7a4a52" : "none",
               transition: "box-shadow 0.1s",
             }}
           >

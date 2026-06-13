@@ -23,7 +23,11 @@ export function FlowController({
 
   useEffect(() => {
     if (step === "submitting") {
-      onComplete(answers);
+      const formattedAnswers: Record<string, string> = {};
+      for (const [qId, options] of Object.entries(answers)) {
+        formattedAnswers[qId] = options.join(", ");
+      }
+      onComplete(formattedAnswers);
     }
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -43,8 +47,8 @@ export function FlowController({
         question={currentQuestion}
         questionNumber={currentIndex + 1}
         totalQuestions={questions.length}
-        selectedOption={answers[currentQuestion.id]}
-        onSelect={(option) => selectAnswer(currentQuestion.id, option)}
+        selectedOptions={answers[currentQuestion.id] || []}
+        onSelect={(option) => selectAnswer(currentQuestion.id, option, currentIndex === 0)}
         onBack={currentIndex > 0 ? goBack : null}
         onNext={goToNext}
         isLastQuestion={currentIndex === questions.length - 1}

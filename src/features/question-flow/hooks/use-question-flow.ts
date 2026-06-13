@@ -12,8 +12,8 @@ function stepForIndex(i: number): FlowStep {
 export interface QuestionFlowState {
   step: FlowStep;
   currentIndex: number;
-  answers: Record<string, string>; // questionId → selectedOption
-  selectAnswer: (questionId: string, option: string) => void;
+  answers: Record<string, string[]>; // questionId → selectedOptions
+  selectAnswer: (questionId: string, option: string, isSingleSelect?: boolean) => void;
   goToNext: () => void;
   goBack: () => void;
   reset: () => void;
@@ -22,10 +22,22 @@ export interface QuestionFlowState {
 export function useQuestionFlow(questions: Question[]): QuestionFlowState {
   const [step, setStep] = useState<FlowStep>(stepForIndex(0));
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string[]>>({});
 
-  function selectAnswer(questionId: string, option: string) {
-    setAnswers((prev) => ({ ...prev, [questionId]: option }));
+  function selectAnswer(questionId: string, option: string, isSingleSelect: boolean = false) {
+    setAnswers((prev) => {
+      const current = prev[questionId] || [];
+      if (isSingleSelect) {
+        return { ...prev, [questionId]: [option] };
+      }
+      if (current.includes(option)) {
+        return { ...prev, [questionId]: current.filter((o) => o !== option) };
+      }
+      if (current.length >= 3) {
+        return prev;
+      }
+      return { ...prev, [questionId]: [...current, option] };
+    });
   }
 
   function goToNext() {
