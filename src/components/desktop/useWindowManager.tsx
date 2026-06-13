@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 export interface WindowState {
   id: string;
   title: string;
-  componentType: "ask" | "result" | "aesthetic" | "generic";
+  componentType: "ask" | "result" | "aesthetic" | "generic" | "display";
   props?: any;
   x: number;
   y: number;
@@ -25,6 +25,8 @@ export type WindowManagerAPI = {
   toggleMaximize: (id: string) => void;
   updateWindowPosition: (id: string, x: number, y: number) => void;
   updateWindowSize: (id: string, width: number, height: number) => void;
+  wallpaperSrc: string | null;
+  setWallpaperSrc: (src: string | null) => void;
 };
 
 const WindowManagerContext = React.createContext<WindowManagerAPI | null>(null);
@@ -41,6 +43,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [topZIndex, setTopZIndex] = useState(10);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [wallpaperSrc, setWallpaperSrc] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -58,6 +61,10 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
         }
         setTopZIndex(maxZ);
       }
+      const savedWallpaper = localStorage.getItem("desktop_wallpaper");
+      if (savedWallpaper) {
+        setWallpaperSrc(savedWallpaper);
+      }
     } catch (e) {
       console.error("Failed to load window state", e);
     }
@@ -67,8 +74,13 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem("desktop_windows", JSON.stringify(windows));
+      if (wallpaperSrc) {
+        localStorage.setItem("desktop_wallpaper", wallpaperSrc);
+      } else {
+        localStorage.removeItem("desktop_wallpaper");
+      }
     }
-  }, [windows, isInitialized]);
+  }, [windows, wallpaperSrc, isInitialized]);
 
   const openWindow = useCallback(
     (
@@ -152,6 +164,8 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
         toggleMaximize,
         updateWindowPosition,
         updateWindowSize,
+        wallpaperSrc,
+        setWallpaperSrc,
       }}
     >
       {children}

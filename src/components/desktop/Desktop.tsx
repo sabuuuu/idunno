@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Link } from "@tanstack/react-router";
-import { Clapperboard, Heart, Rss, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { useWindowManager, WindowManagerProvider } from "./useWindowManager";
 import { Window } from "./Window";
+import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 import { AestheticWindow } from "./AestheticWindow";
 
 // ─── Top navbar — Win98 title bar style ────────────────────────────
@@ -31,6 +31,13 @@ function TopBar() {
         >
           IDONNU.EXE
         </span>
+      </div>
+
+      <div className="flex gap-4 ml-2 mr-auto" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px", color: "#1c1b1b" }}>
+        <button className="hover:text-white transition-colors cursor-pointer">File</button>
+        <button className="hover:text-white transition-colors cursor-pointer">Edit</button>
+        <button className="hover:text-white transition-colors cursor-pointer">View</button>
+        <button className="hover:text-white transition-colors cursor-pointer">Help</button>
       </div>
     </header>
   );
@@ -72,7 +79,7 @@ function TaskbarClock() {
 }
 
 function BottomNav() {
-  const { windows, focusWindow, minimizeWindow } = useWindowManager();
+  const { windows, focusWindow, minimizeWindow, openWindow } = useWindowManager();
 
   return (
     <nav
@@ -131,9 +138,44 @@ function BottomNav() {
         }}
       />
 
+      {/* ── Quick Launch ── */}
+      <div className="flex items-center gap-1 px-1 shrink-0">
+        <button
+          onClick={() => {
+            openWindow({
+              id: "display-properties",
+              title: "DISPLAY.EXE",
+              componentType: "display" as any,
+              x: typeof window !== "undefined" ? window.innerWidth / 2 - 200 : 200,
+              y: typeof window !== "undefined" ? window.innerHeight / 2 - 175 : 100,
+              width: 400,
+              height: 350,
+            });
+          }}
+          className="w-6 h-6 flex items-center justify-center cursor-pointer active:translate-y-px"
+          title="Display Properties"
+          style={{
+            backgroundColor: "#c9858e",
+            border: "1px solid #1c1b1b",
+            boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52",
+          }}
+        >
+          <Settings size={12} color="#1c1b1b" />
+        </button>
+      </div>
+
+      {/* ── Divider ── */}
+      <div
+        className="shrink-0 self-stretch my-1"
+        style={{
+          width: "2px",
+          boxShadow: "inset 1px 0px 0px #7a4a52, inset -1px 0px 0px #f4eceb",
+        }}
+      />
+
       {/* ── Window Tabs ── */}
       <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto">
-        {windows.map((win) => {
+        {windows.filter((w) => w.componentType !== "aesthetic").map((win) => {
           const isActive = win.isFocused && !win.isMinimized;
           return (
             <button
@@ -187,7 +229,7 @@ function BottomNav() {
 // ─── Main desktop shell ─────────────────────────────────────────────
 
 function DesktopContent({ children }: { children: React.ReactNode }) {
-  const { windows, openWindow } = useWindowManager();
+  const { windows, openWindow, wallpaperSrc } = useWindowManager();
   const [initialized, setInitialized] = React.useState(false);
 
   React.useEffect(() => {
@@ -210,26 +252,26 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
     if (!hasAesthetic1) {
       openWindow({
         id: "aesthetic-1",
-        title: "CYBER.JPG",
+        title: "SUNSET.GIF",
         componentType: "aesthetic",
         x: 20,
         y: 40,
         width: 320,
         height: 260,
-        props: { src: "/retro1.jpg" },
+        props: { src: "/images/retro2.jpg" },
       });
     }
 
     if (!hasAesthetic2) {
       openWindow({
         id: "aesthetic-2",
-        title: "SUNSET.GIF",
+        title: "KITTY.JPG",
         componentType: "aesthetic",
         x: typeof window !== "undefined" ? window.innerWidth - 340 : 500,
-        y: 100,
-        width: 320,
-        height: 260,
-        props: { src: "/retro2.png" },
+        y: 400,
+        width: 260,
+        height: 220,
+        props: { src: "/images/retro1.png" },
       });
     }
     setInitialized(true);
@@ -238,6 +280,14 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="dot-grid" aria-hidden="true" />
+      {wallpaperSrc && (
+        <img
+          src={wallpaperSrc}
+          alt="Desktop Wallpaper"
+          className="absolute inset-0 w-full h-full object-fill"
+          style={{ zIndex: 0 }}
+        />
+      )}
       <div className="crt-overlay" aria-hidden="true" />
 
       <TopBar />
@@ -252,10 +302,11 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         {windows.map((win) => (
           <Window key={win.id} window={win}>
             {win.componentType === "aesthetic" && (
-              <AestheticWindow 
-                src={win.id === "aesthetic-1" ? "/retro1.jpg" : win.id === "aesthetic-2" ? "/retro2.png" : win.props?.src} 
+              <AestheticWindow
+                src={win.id === "aesthetic-1" ? "/images/retro1.png" : win.id === "aesthetic-2" ? "/images/retro2.jpg" : win.props?.src}
               />
             )}
+            {win.componentType === ("display" as any) && <DisplayPropertiesWindow />}
             {/* The Window component renders #window-content-{win.id} where children are portaled */}
           </Window>
         ))}
