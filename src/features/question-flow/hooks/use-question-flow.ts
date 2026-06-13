@@ -1,9 +1,13 @@
 import { useState } from "react";
 import type { Question } from "~/types/db";
 
-export type FlowStep = "idle" | "q1" | "q2" | "q3" | "submitting" | "done";
+// Step labels are derived dynamically from the question count —
+// no need to update this file when the number of questions changes.
+export type FlowStep = "idle" | `q${number}` | "submitting" | "done";
 
-const STEPS: FlowStep[] = ["q1", "q2", "q3"];
+function stepForIndex(i: number): FlowStep {
+  return `q${i + 1}`;
+}
 
 export interface QuestionFlowState {
   step: FlowStep;
@@ -16,7 +20,7 @@ export interface QuestionFlowState {
 }
 
 export function useQuestionFlow(questions: Question[]): QuestionFlowState {
-  const [step, setStep] = useState<FlowStep>("q1");
+  const [step, setStep] = useState<FlowStep>(stepForIndex(0));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -28,7 +32,7 @@ export function useQuestionFlow(questions: Question[]): QuestionFlowState {
     const nextIndex = currentIndex + 1;
     if (nextIndex < questions.length) {
       setCurrentIndex(nextIndex);
-      setStep(STEPS[nextIndex] ?? "submitting");
+      setStep(stepForIndex(nextIndex));
     } else {
       setStep("submitting");
     }
@@ -38,11 +42,11 @@ export function useQuestionFlow(questions: Question[]): QuestionFlowState {
     if (currentIndex === 0) return;
     const prevIndex = currentIndex - 1;
     setCurrentIndex(prevIndex);
-    setStep(STEPS[prevIndex] ?? "q1");
+    setStep(stepForIndex(prevIndex));
   }
 
   function reset() {
-    setStep("q1");
+    setStep(stepForIndex(0));
     setCurrentIndex(0);
     setAnswers({});
   }

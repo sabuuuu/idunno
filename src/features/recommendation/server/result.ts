@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "~/lib/db";
 import { picks } from "~/lib/db/schema";
-import { searchOmdbTitle } from "~/lib/omdb/queries";
+import { fetchOmdbById, searchOmdbTitle } from "~/lib/omdb/queries";
 import { fetchAnimeById } from "~/lib/jikan/queries";
 import type { MediaResult } from "~/features/recommendation/types/recommendation";
 
@@ -51,7 +51,10 @@ export const getResult = createServerFn({ method: "GET" })
       throw new Error("Result is missing a title and cannot be displayed.");
     }
 
-    const omdb = await searchOmdbTitle(pick.resultTitle, type);
+    // Prefer direct imdbID lookup (accurate poster) — fall back to title search
+    const omdb = pick.resultImdbId
+      ? await fetchOmdbById(pick.resultImdbId)
+      : await searchOmdbTitle(pick.resultTitle, type);
 
     return {
       title: omdb.Title,

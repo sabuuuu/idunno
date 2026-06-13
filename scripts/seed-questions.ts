@@ -1,5 +1,5 @@
 /**
- * Seed the default question set.
+ * Seed the question set — clears existing rows and inserts the current set.
  * Run with: pnpm db:seed
  */
 import postgres from "postgres";
@@ -12,40 +12,66 @@ const db = drizzle(client);
 const defaultQuestions = [
   {
     order: 1,
-    text: "What mood are you in tonight?",
+    text: "What do you want to watch?",
     options: [
-      "I want to laugh",
-      "I want to feel something",
-      "I want to be on the edge of my seat",
-      "I want to switch my brain off",
+      "A movie (live-action)",
+      "A TV series (live-action)",
+      "Anime",
+      "Animation (western / Pixar / Studio Ghibli)",
+      "A documentary",
     ],
   },
   {
     order: 2,
-    text: "How much time do you have?",
+    text: "What's the vibe tonight?",
     options: [
-      "Under 90 minutes",
-      "A full movie (90–120 min)",
-      "A couple of episodes",
-      "I'll binge all night",
+      "I want to laugh",
+      "I want to feel something deep",
+      "I want tension — thriller or suspense",
+      "I want big action or spectacle",
+      "I want something cosy and calm",
     ],
   },
   {
     order: 3,
+    text: "How much time do you have?",
+    options: [
+      "Under 90 minutes",
+      "A proper 2-hour film",
+      "A few episodes (2–4)",
+      "I'm ready to binge",
+    ],
+  },
+  {
+    order: 4,
+    text: "Any preference on era or language?",
+    options: [
+      "Modern (2010s–now)",
+      "A classic (pre-2000s)",
+      "Foreign language is fine",
+      "English only please",
+      "No preference",
+    ],
+  },
+  {
+    order: 5,
     text: "What do you want to avoid?",
     options: [
-      "Anything too heavy or dark",
-      "Slow burns",
-      "Jump scares or gore",
-      "I'm open to anything",
+      "Anything too dark or violent",
+      "Slow burns — I need pace",
+      "Horror or jump scares",
+      "Heavy romance",
+      "Nothing — I'm open to everything",
     ],
   },
 ];
 
 async function seed() {
-  console.log("Seeding questions…");
-  await db.insert(questions).values(defaultQuestions).onConflictDoNothing();
-  console.log("Done.");
+  console.log("Clearing existing questions…");
+  await db.delete(questions);
+  console.log("Inserting new questions…");
+  await db.insert(questions).values(defaultQuestions);
+  console.log(`Done — ${defaultQuestions.length} questions seeded.`);
   await client.end();
 }
 

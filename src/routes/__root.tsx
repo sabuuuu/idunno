@@ -5,7 +5,6 @@ import {
   Scripts,
   createRootRoute,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
 import { Toaster } from "react-hot-toast";
@@ -84,9 +83,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             }}
           />
         </QueryClientProvider>
-        {import.meta.env.DEV && (
-          <TanStackRouterDevtools position="bottom-right" />
-        )}
         <Scripts />
       </body>
     </html>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import { FlowController } from "~/features/question-flow/components/flow-controller";
@@ -13,13 +14,19 @@ function AskPage() {
   const questions = Route.useLoaderData();
   const navigate = useNavigate();
   const { mutate: submitAnswers, isPending } = useRecommend();
+  // Keeps the loading screen visible while the result route's loader is running
+  const [isNavigating, setIsNavigating] = useState(false);
 
   function handleComplete(answers: Record<string, string>) {
     submitAnswers(answers, {
       onSuccess: ({ sessionId }) => {
+        setIsNavigating(true);
         navigate({ to: "/result/$sessionId", params: { sessionId } });
       },
-      onError: (err) => toast.error(err.message),
+      onError: (err) => {
+        setIsNavigating(false);
+        toast.error(err.message);
+      },
     });
   }
 
@@ -30,7 +37,7 @@ function AskPage() {
       <FlowController
         questions={questions}
         onComplete={handleComplete}
-        isPending={isPending}
+        isPending={isPending || isNavigating}
       />
     </main>
   );
