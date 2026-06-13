@@ -39,7 +39,7 @@ function AskPage() {
       x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 700) / 2) : 100}
       y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 750) / 2) : 50}
       width={700}
-      height={750}
+      height={700}
     >
       <main className="relative flex flex-col items-center justify-center p-4 min-h-full">
         <FlowController

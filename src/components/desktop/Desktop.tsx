@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Settings } from "lucide-react";
 import { useWindowManager, WindowManagerProvider } from "./useWindowManager";
 import { Window } from "./Window";
@@ -80,6 +81,7 @@ function TaskbarClock() {
 
 function BottomNav() {
   const { windows, focusWindow, minimizeWindow, openWindow } = useWindowManager();
+  const navigate = useNavigate();
 
   return (
     <nav
@@ -94,7 +96,7 @@ function BottomNav() {
       {/* ── Start button ── */}
       <button
         className="flex items-center gap-1.5 shrink-0 h-[26px] px-2"
-        onClick={() => { window.location.href = "/ask"; }}
+        onClick={() => { navigate({ to: "/ask" }); }}
         style={{
           backgroundColor: "#b76e79",
           boxShadow:

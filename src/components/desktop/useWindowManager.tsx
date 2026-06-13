@@ -50,10 +50,10 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       const saved = localStorage.getItem("desktop_windows");
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Reset focus on reload
-        const unfocused = parsed.map((w: WindowState) => ({ ...w, isFocused: false }));
+        const validWindows = parsed.filter((w: WindowState) => ["aesthetic", "display"].includes(w.componentType));
+        const unfocused = validWindows.map((w: WindowState) => ({ ...w, isFocused: false }));
         setWindows(unfocused);
-        
+
         // Find highest zIndex to resume
         let maxZ = 10;
         for (const w of parsed) {

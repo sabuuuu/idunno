@@ -58,13 +58,14 @@ function ResultErrorBoundary({ error }: ErrorComponentProps) {
         primaryLabel="TRY AGAIN ▶"
         onPrimary={() => router.invalidate()}
         secondaryLabel="START OVER ↺"
-        onSecondary={() => { window.location.href = "/ask"; }}
+        onSecondary={() => router.navigate({ to: "/ask" })}
       />
     </WindowPortal>
   );
 }
 
 function ResultNotFound() {
+  const router = useRouter();
   return (
     <WindowPortal
       id="not-found-window"
@@ -80,7 +81,7 @@ function ResultNotFound() {
         subtitle="even our robot had a bad day ♡"
         body="We couldn't find a movie match for your current vibe. Maybe the universe wants you to go for a walk? Or try answering the questions again — we promise we're listening this time."
         secondaryLabel="START OVER ↺"
-        onSecondary={() => { window.location.href = "/ask"; }}
+        onSecondary={() => router.navigate({ to: "/ask" })}
       />
     </WindowPortal>
   );

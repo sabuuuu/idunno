@@ -1,6 +1,7 @@
 import * as React from "react";
 import { WindowTitleBar } from "~/components/WindowTitleBar";
 import { FeedbackButtons } from "~/features/feedback/components/feedback-buttons";
+import { useNavigate } from "@tanstack/react-router";
 import type { MediaResult } from "~/features/recommendation/types/recommendation";
 
 const TYPE_LABEL: Record<MediaResult["type"], string> = {
@@ -35,6 +36,7 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ result, sessionId }: ResultCardProps) {
+  const navigate = useNavigate();
   const hasPoster = Boolean(result.poster && result.poster !== "N/A");
 
   return (
@@ -236,7 +238,7 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
             <FeedbackButtons sessionId={sessionId} />
 
             <button
-              onClick={() => window.location.href = "/ask"}
+              onClick={() => navigate({ to: "/ask" })}
               className="uppercase pixel-shadow-active"
               style={{
                 fontFamily: "'VT323', monospace",
