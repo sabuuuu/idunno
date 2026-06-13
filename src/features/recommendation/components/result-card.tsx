@@ -43,15 +43,12 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
       style={{
         maxWidth: "896px",
         backgroundColor: "#F4ECEB",
-        border: "2px solid #B76E79",
-        boxShadow: "4px 4px 0px 0px #B76E79",
       }}
     >
       {/* Scanline sweep beam */}
       <div className="scanline-beam" aria-hidden="true" />
 
-      {/* Title bar */}
-      <WindowTitleBar label={`result.exe — ${result.title.toLowerCase()}`} />
+
 
       <div className="flex flex-col md:flex-row relative z-10">
 

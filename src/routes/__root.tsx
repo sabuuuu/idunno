@@ -10,7 +10,7 @@ import * as React from "react";
 import { Toaster } from "react-hot-toast";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
-import { RetroDesktop } from "~/components/RetroDesktop";
+import { Desktop } from "~/components/desktop/Desktop";
 import { healthCheck } from "~/server/health";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
@@ -65,9 +65,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <RetroDesktop>
+          <Desktop>
             <Outlet />
-          </RetroDesktop>
+          </Desktop>
           <Toaster
             position="bottom-center"
             toastOptions={{

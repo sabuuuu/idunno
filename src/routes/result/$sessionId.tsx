@@ -3,6 +3,7 @@ import { ResultCard } from "~/features/recommendation/components/result-card";
 import { getResult } from "~/features/recommendation/server/result";
 import { ErrorWindow } from "~/components/ErrorWindow";
 import type { ErrorComponentProps } from "@tanstack/react-router";
+import { WindowPortal } from "~/components/desktop/WindowPortal";
 
 export const Route = createFileRoute("/result/$sessionId")({
   loader: ({ params }) => getResult({ data: params.sessionId }),
@@ -16,13 +17,21 @@ function ResultPage() {
   const { sessionId } = Route.useParams();
 
   return (
-    <main className="relative flex flex-col items-center justify-center px-4 py-10 min-h-full">
-      <div className="dot-grid absolute inset-0" aria-hidden="true" />
-      <div className="crt-overlay absolute inset-0" aria-hidden="true" />
-      <div className="z-10 w-full flex justify-center">
-        <ResultCard result={result} sessionId={sessionId} />
-      </div>
-    </main>
+    <WindowPortal
+      id="result-window"
+      title="MATCH.DAT"
+      componentType="result"
+      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 750) / 2) : 100}
+      y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 700) / 2) : 80}
+      width={1050}
+      height={750}
+    >
+      <main className="relative flex flex-col items-center justify-center p-4 min-h-full">
+        <div className="z-10 w-full flex justify-center">
+          <ResultCard result={result} sessionId={sessionId} />
+        </div>
+      </main>
+    </WindowPortal>
   );
 }
 
@@ -33,26 +42,46 @@ function ResultErrorBoundary({ error }: ErrorComponentProps) {
   if (isNotFound) return <ResultNotFound />;
 
   return (
-    <ErrorWindow
-      message="Something went wrong."
-      subtitle={error instanceof Error ? error.message : "an unexpected error occurred ♡"}
-      body="We hit a snag on our end. Try again or start fresh — your next recommendation is just three questions away."
-      primaryLabel="TRY AGAIN ▶"
-      onPrimary={() => router.invalidate()}
-      secondaryLabel="START OVER ↺"
-      onSecondary={() => { window.location.href = "/ask"; }}
-    />
+    <WindowPortal
+      id="error-window"
+      title="ERROR.LOG"
+      componentType="generic"
+      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 550) / 2) : 200}
+      y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 400) / 2) : 150}
+      width={550}
+      height={400}
+    >
+      <ErrorWindow
+        message="Something went wrong."
+        subtitle={error instanceof Error ? error.message : "an unexpected error occurred ♡"}
+        body="We hit a snag on our end. Try again or start fresh — your next recommendation is just three questions away."
+        primaryLabel="TRY AGAIN ▶"
+        onPrimary={() => router.invalidate()}
+        secondaryLabel="START OVER ↺"
+        onSecondary={() => { window.location.href = "/ask"; }}
+      />
+    </WindowPortal>
   );
 }
 
 function ResultNotFound() {
   return (
-    <ErrorWindow
-      message="Whoops! This pick got lost in the matrix."
-      subtitle="even our robot had a bad day ♡"
-      body="We couldn't find a movie match for your current vibe. Maybe the universe wants you to go for a walk? Or try answering the questions again — we promise we're listening this time."
-      secondaryLabel="START OVER ↺"
-      onSecondary={() => { window.location.href = "/ask"; }}
-    />
+    <WindowPortal
+      id="not-found-window"
+      title="404.LOG"
+      componentType="generic"
+      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 550) / 2) : 200}
+      y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 400) / 2) : 150}
+      width={550}
+      height={400}
+    >
+      <ErrorWindow
+        message="Whoops! This pick got lost in the matrix."
+        subtitle="even our robot had a bad day ♡"
+        body="We couldn't find a movie match for your current vibe. Maybe the universe wants you to go for a walk? Or try answering the questions again — we promise we're listening this time."
+        secondaryLabel="START OVER ↺"
+        onSecondary={() => { window.location.href = "/ask"; }}
+      />
+    </WindowPortal>
   );
 }

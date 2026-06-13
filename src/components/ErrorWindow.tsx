@@ -49,12 +49,11 @@ export function ErrorWindow({
         </div>
       ))}
 
-      {/* Window */}
+      {/* Content */}
       <div
-        className="z-10 relative w-full"
-        style={{ maxWidth: "500px", border: "2px solid #b76e79", boxShadow: "4px 4px 0px #b76e79" }}
+        className="z-10 relative w-full h-full"
+        style={{ maxWidth: "500px" }}
       >
-        <WindowTitleBar label="ERROR_404.EXE" />
 
         <div className="relative overflow-hidden" style={{ padding: "32px 32px 28px", backgroundColor: "#f4eceb" }}>
           {/* Inner scanlines */}

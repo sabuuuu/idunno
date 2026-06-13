@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { FlowController } from "~/features/question-flow/components/flow-controller";
 import { getQuestions } from "~/features/question-flow/server/questions";
 import { useRecommend } from "~/features/recommendation/hooks/use-recommend";
+import { WindowPortal } from "~/components/desktop/WindowPortal";
 
 export const Route = createFileRoute("/ask")({
   loader: () => getQuestions(),
@@ -31,14 +32,22 @@ function AskPage() {
   }
 
   return (
-    <main className="relative flex flex-col items-center justify-center py-12 px-4 min-h-full">
-      <div className="dot-grid absolute inset-0" aria-hidden="true" />
-      <div className="crt-overlay absolute inset-0" aria-hidden="true" />
-      <FlowController
-        questions={questions}
-        onComplete={handleComplete}
-        isPending={isPending || isNavigating}
-      />
-    </main>
+    <WindowPortal
+      id="ask-window"
+      title="QUEST.EXE"
+      componentType="ask"
+      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 700) / 2) : 100}
+      y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 750) / 2) : 50}
+      width={700}
+      height={750}
+    >
+      <main className="relative flex flex-col items-center justify-center p-4 min-h-full">
+        <FlowController
+          questions={questions}
+          onComplete={handleComplete}
+          isPending={isPending || isNavigating}
+        />
+      </main>
+    </WindowPortal>
   );
 }

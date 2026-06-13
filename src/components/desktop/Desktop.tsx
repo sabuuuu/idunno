@@ -1,37 +1,12 @@
 import * as React from "react";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Clapperboard, Heart, Rss, Settings } from "lucide-react";
+import { useWindowManager, WindowManagerProvider } from "./useWindowManager";
+import { Window } from "./Window";
+import { AestheticWindow } from "./AestheticWindow";
 
 // ─── Top navbar — Win98 title bar style ────────────────────────────
-
 function TopBar() {
-  const CHROME_ACTIONS = [
-    {
-      label: "Minimise",
-      glyph: "—",
-      fontSize: "10px",
-      onClick: () => window.scrollTo({ top: 0, behavior: "smooth" }),
-    },
-    {
-      label: "Maximise",
-      glyph: "□",
-      fontSize: "9px",
-      onClick: () => {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        } else {
-          document.exitFullscreen().catch(() => {});
-        }
-      },
-    },
-    {
-      label: "Close",
-      glyph: "✕",
-      fontSize: "9px",
-      onClick: () => { window.location.href = "/ask"; },
-    },
-  ] as const;
-
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-1 gap-2"
@@ -42,7 +17,6 @@ function TopBar() {
           "inset 0px 1px 0px #f4eceb, inset 1px 0px 0px #f4eceb, inset 0px -1px 0px #7a4a52, inset -1px 0px 0px #7a4a52",
       }}
     >
-      {/* ── Title strip ── */}
       <div
         className="flex items-center gap-2 flex-1 min-w-0 h-[20px] px-2 select-none"
         style={{
@@ -50,7 +24,7 @@ function TopBar() {
           boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52",
         }}
       >
-        <span style={{ fontSize: "12px", lineHeight: 1 }} aria-hidden="true">♡</span>
+        <span style={{ fontSize: "12px", lineHeight: 1, color: "white" }} aria-hidden="true">♡</span>
         <span
           className="text-white leading-none truncate"
           style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px", fontWeight: 700, letterSpacing: "0.05em" }}
@@ -58,57 +32,11 @@ function TopBar() {
           IDONNU.EXE
         </span>
       </div>
-
-      {/* ── Window control buttons ── */}
-      <div className="flex items-center gap-0.5 shrink-0">
-        {CHROME_ACTIONS.map(({ label, glyph, fontSize, onClick }) => (
-          <button
-            key={label}
-            aria-label={label}
-            onClick={onClick}
-            className="flex items-center justify-center"
-            style={{
-              width: "18px",
-              height: "18px",
-              backgroundColor: "#d4a0a8",
-              border: "1px solid #1c1b1b",
-              boxShadow:
-                "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853",
-              fontSize,
-              fontFamily: "'Space Mono', monospace",
-              color: "#1c1b1b",
-              cursor: "pointer",
-            }}
-            onMouseDown={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb, inset 2px 2px 0px #8a4853";
-            }}
-            onMouseUp={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-            }}
-          >
-            {glyph}
-          </button>
-        ))}
-      </div>
     </header>
   );
 }
 
 // ─── Bottom nav — Win98 taskbar style ──────────────────────────────
-
-const NAV_ITEMS = [
-  { label: "QUEST", Icon: Clapperboard, to: "/ask" as const },
-  { label: "FAVES", Icon: Heart,        to: "/"    as const },
-  { label: "FEED",  Icon: Rss,          to: "/"    as const },
-  { label: "SETUP", Icon: Settings,     to: "/"    as const },
-];
-
 function TaskbarClock() {
   const [time, setTime] = React.useState(() =>
     new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -125,7 +53,6 @@ function TaskbarClock() {
     <div
       className="flex items-center justify-center px-3 h-full shrink-0"
       style={{
-        // inset border = pressed tray look
         boxShadow: "inset 1px 1px 0px #808080, inset -1px -1px 0px #ffffff",
         minWidth: "60px",
       }}
@@ -145,7 +72,7 @@ function TaskbarClock() {
 }
 
 function BottomNav() {
-  const location = useLocation();
+  const { windows, focusWindow, minimizeWindow } = useWindowManager();
 
   return (
     <nav
@@ -153,7 +80,6 @@ function BottomNav() {
       style={{
         height: "44px",
         backgroundColor: "#d4a0a8",
-        // Win98 raised bevel: bright top/left, dark bottom/right
         boxShadow:
           "inset 0px 1px 0px #f4eceb, inset 1px 0px 0px #f4eceb, inset 0px -1px 0px #7a4a52, inset -1px 0px 0px #7a4a52",
       }}
@@ -182,7 +108,7 @@ function BottomNav() {
             "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
         }}
       >
-        <span style={{ fontSize: "14px", lineHeight: 1 }}>♡</span>
+        <span style={{ fontSize: "14px", lineHeight: 1, color: "white" }}>♡</span>
         <span
           style={{
             fontFamily: "'Press Start 2P', monospace",
@@ -205,30 +131,30 @@ function BottomNav() {
         }}
       />
 
-      {/* ── App buttons ── */}
-      <div className="flex items-center gap-0.5 flex-1 min-w-0">
-        {NAV_ITEMS.map(({ label, Icon, to }) => {
-          const isActive = to !== "/" && location.pathname.startsWith(to);
+      {/* ── Window Tabs ── */}
+      <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto">
+        {windows.map((win) => {
+          const isActive = win.isFocused && !win.isMinimized;
           return (
-            <Link
-              key={label}
-              to={to}
+            <button
+              key={win.id}
+              onClick={() => {
+                if (isActive) {
+                  minimizeWindow(win.id);
+                } else {
+                  focusWindow(win.id);
+                }
+              }}
               className="flex items-center gap-1.5 h-[26px] px-2 min-w-0 shrink-0 select-none"
               style={{
                 backgroundColor: isActive ? "#b76e79" : "#c9858e",
                 border: "1px solid #1c1b1b",
-                // Active = pressed in, inactive = raised out
                 boxShadow: isActive
                   ? "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb, inset 2px 2px 0px #8a4853"
                   : "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853",
+                maxWidth: "150px"
               }}
             >
-              <Icon
-                size={12}
-                strokeWidth={2}
-                color={isActive ? "#f4eceb" : "#1c1b1b"}
-                fill={isActive ? "#ffb2bc" : "none"}
-              />
               <span
                 className="truncate"
                 style={{
@@ -238,9 +164,9 @@ function BottomNav() {
                   letterSpacing: "0.03em",
                 }}
               >
-                {label}
+                {win.title}
               </span>
-            </Link>
+            </button>
           );
         })}
       </div>
@@ -260,34 +186,93 @@ function BottomNav() {
 
 // ─── Main desktop shell ─────────────────────────────────────────────
 
-interface RetroDesktopProps {
-  children: React.ReactNode;
-}
+function DesktopContent({ children }: { children: React.ReactNode }) {
+  const { windows, openWindow } = useWindowManager();
+  const [initialized, setInitialized] = React.useState(false);
 
-export function RetroDesktop({ children }: RetroDesktopProps) {
+  React.useEffect(() => {
+    if (initialized) return;
+
+    // Default aesthetic windows
+    const saved = localStorage.getItem("desktop_windows");
+    let hasAesthetic1 = false;
+    let hasAesthetic2 = false;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        hasAesthetic1 = parsed.some((w: any) => w.id === "aesthetic-1");
+        hasAesthetic2 = parsed.some((w: any) => w.id === "aesthetic-2");
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    if (!hasAesthetic1) {
+      openWindow({
+        id: "aesthetic-1",
+        title: "CYBER.JPG",
+        componentType: "aesthetic",
+        x: 20,
+        y: 40,
+        width: 320,
+        height: 260,
+        props: { src: "/retro1.jpg" },
+      });
+    }
+
+    if (!hasAesthetic2) {
+      openWindow({
+        id: "aesthetic-2",
+        title: "SUNSET.GIF",
+        componentType: "aesthetic",
+        x: typeof window !== "undefined" ? window.innerWidth - 340 : 500,
+        y: 100,
+        width: 320,
+        height: 260,
+        props: { src: "/retro2.png" },
+      });
+    }
+    setInitialized(true);
+  }, [initialized, openWindow]);
+
   return (
     <>
-      {/* Ambient layers — behind everything */}
       <div className="dot-grid" aria-hidden="true" />
       <div className="crt-overlay" aria-hidden="true" />
 
       <TopBar />
 
-      {/* Desktop area between the two bars */}
       <div
-        className="relative z-10 flex items-center justify-center"
-        style={{ paddingTop: "28px", paddingBottom: "44px", minHeight: "100dvh" }}
+        className="absolute inset-0 overflow-hidden"
+        style={{ paddingTop: "28px", paddingBottom: "44px" }}
       >
-        <div className="relative w-full overflow-hidden" style={{ maxWidth: "860px" }}>
-          {/* Sweeping scanline beam */}
-          <div className="scanline-beam" aria-hidden="true" />
-          <div className="relative z-10">
-            {children}
-          </div>
-        </div>
+        <div className="scanline-beam" aria-hidden="true" />
+
+        {/* Windows Rendering */}
+        {windows.map((win) => (
+          <Window key={win.id} window={win}>
+            {win.componentType === "aesthetic" && (
+              <AestheticWindow 
+                src={win.id === "aesthetic-1" ? "/retro1.jpg" : win.id === "aesthetic-2" ? "/retro2.png" : win.props?.src} 
+              />
+            )}
+            {/* The Window component renders #window-content-{win.id} where children are portaled */}
+          </Window>
+        ))}
+
+        {/* Invisible container for route content. Children will portal themselves into windows */}
+        <div style={{ display: "none" }}>{children}</div>
       </div>
 
       <BottomNav />
     </>
+  );
+}
+
+export function Desktop({ children }: { children: React.ReactNode }) {
+  return (
+    <WindowManagerProvider>
+      <DesktopContent>{children}</DesktopContent>
+    </WindowManagerProvider>
   );
 }

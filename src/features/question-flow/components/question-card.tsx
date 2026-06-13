@@ -30,10 +30,8 @@ export function QuestionCard({
   return (
     <div
       className="w-full relative"
-      style={{ border: "2px solid #b76e79", boxShadow: "4px 4px 0px #b76e79" }}
     >
-      {/* ── Title bar ── */}
-      <WindowTitleBar label={`quiz_mode.exe — question ${questionNumber} of ${totalQuestions}`} />
+      {/* ── Body ── */}
 
       {/* ── Body ── */}
       <div className="bg-background p-6">
