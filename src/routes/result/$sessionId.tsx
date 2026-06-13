@@ -21,9 +21,9 @@ function ResultPage() {
       id="result-window"
       title="MATCH.DAT"
       componentType="result"
-      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 750) / 2) : 100}
-      y={typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 700) / 2) : 80}
-      width={1050}
+      x={typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 1100) / 2) : 100}
+      y={typeof window !== "undefined" ? Math.max(20, (window.innerHeight - 800) / 2 - 60) : 20}
+      width={1000}
       height={750}
     >
       <main className="relative flex flex-col items-center justify-center p-4 min-h-full">

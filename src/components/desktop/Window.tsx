@@ -160,9 +160,9 @@ export function Window({ window: win, children }: { window: WindowState; childre
       {/* Content */}
       <div 
         id={`window-content-${win.id}`}
-        className="flex-1 overflow-auto bg-[#fdfaf6] border m-0.5 relative"
+        className="flex-1 overflow-auto bg-[#f4eceb] border m-0.5 relative"
         style={{
-          boxShadow: "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb",
+          boxShadow: "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #ffffff",
           borderColor: "#1c1b1b"
         }}
       >

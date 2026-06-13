@@ -122,8 +122,9 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
                     fontSize: "10px",
                     fontWeight: 700,
                     border: "2px solid #8a4853",
-                    width: "32px",
-                    height: "32px",
+                    padding: "0 10px",
+                    height: "28px",
+                    minWidth: "28px",
                   }}
                 >
                   {result.year}
