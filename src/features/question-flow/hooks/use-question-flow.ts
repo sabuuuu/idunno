@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { Question } from "~/types/db";
 
-// Step labels are derived dynamically from the question count —
-// no need to update this file when the number of questions changes.
 export type FlowStep = "idle" | `q${number}` | "submitting" | "done";
 
 function stepForIndex(i: number): FlowStep {
@@ -12,7 +10,7 @@ function stepForIndex(i: number): FlowStep {
 export interface QuestionFlowState {
   step: FlowStep;
   currentIndex: number;
-  answers: Record<string, string[]>; // questionId → selectedOptions
+  answers: Record<string, string[]>;
   selectAnswer: (questionId: string, option: string, isSingleSelect?: boolean) => void;
   goToNext: () => void;
   goBack: () => void;

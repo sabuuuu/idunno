@@ -140,6 +140,25 @@
   --radius-lg:  var(--radius);
   --radius-xl:  calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
+
+  /* Retro Custom Tokens */
+  --color-vapor-cream: #f4eceb;
+  --color-vapor-dark: #1c1b1b;
+  --color-vapor-rose-dark: #8a4853;
+  --color-vapor-rose: #b76e79;
+  --color-vapor-pink: #d4a0a8;
+  --color-win98-blue: #000080;
+  
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-retro: 'VT323', monospace;
+  
+  --text-xxs: 0.625rem; /* 10px */
+  --text-micro: 0.4375rem; /* 7px */
+
+  --shadow-win98-out: inset 1px 1px 0 #f4eceb, inset -1px -1px 0 #7a4a52;
+  --shadow-win98-in: inset 1px 1px 0 #1c1b1b, inset -1px -1px 0 #e0aeb6;
+  --shadow-win98-active: inset 1px 1px 0 #7a4a52, inset -1px -1px 0 #f4eceb;
+  --shadow-pixel: 2px 2px 0px rgba(0,0,0,0.2);
 }
 
 /* ─── Semantic colour tokens ──────────────────────────────────────── */

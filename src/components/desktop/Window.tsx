@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useWindowManager, WindowState } from "./useWindowManager";
+import { Button } from "~/components/ui/button";
 
 export function Window({ window: win, children }: { window: WindowState; children: React.ReactNode }) {
   const { focusWindow, closeWindow, toggleMaximize, minimizeWindow, updateWindowPosition, updateWindowSize } = useWindowManager();
@@ -14,11 +15,11 @@ export function Window({ window: win, children }: { window: WindowState; childre
     document.body.style.userSelect = "none";
 
     const handleMouseMove = (e: MouseEvent) => {
-      let newX = e.clientX - dragOffset.x;
+      const newX = e.clientX - dragOffset.x;
       let newY = e.clientY - dragOffset.y;
-      
+
       // Bounds checking (prevent window from getting completely lost)
-      newY = Math.max(0, newY); 
+      newY = Math.max(0, newY);
 
       updateWindowPosition(win.id, newX, newY);
     };
@@ -87,7 +88,6 @@ export function Window({ window: win, children }: { window: WindowState; childre
       }}
       onMouseDown={() => focusWindow(win.id)}
     >
-      {/* Title Bar */}
       <header
         className="flex items-center justify-between px-1 gap-2 m-0.5"
         style={{
@@ -107,10 +107,10 @@ export function Window({ window: win, children }: { window: WindowState; childre
           <span style={{ fontSize: "10px", lineHeight: 1, color: win.isFocused ? "#fff" : "#1c1b1b" }} aria-hidden="true">♡</span>
           <span
             className="leading-none truncate"
-            style={{ 
-              fontFamily: "'Press Start 2P', monospace", 
-              fontSize: "8px", 
-              fontWeight: 700, 
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "8px",
+              fontWeight: 700,
               letterSpacing: "0.05em",
               color: win.isFocused ? "#ffffff" : "#1c1b1b"
             }}
@@ -118,58 +118,28 @@ export function Window({ window: win, children }: { window: WindowState; childre
             {win.title}
           </span>
         </div>
-
-        {/* Window controls */}
         <div className="flex items-center gap-0.5 shrink-0" onMouseDown={(e) => e.stopPropagation()}>
           {CHROME_ACTIONS.map(({ label, glyph, fontSize, onClick }) => (
-            <button
+            <Button
               key={label}
               aria-label={label}
               onClick={onClick}
-              className="flex items-center justify-center"
-              style={{
-                width: "16px",
-                height: "16px",
-                backgroundColor: "#d4a0a8",
-                border: "1px solid #1c1b1b",
-                boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853",
-                fontSize,
-                fontFamily: "'Space Mono', monospace",
-                color: "#1c1b1b",
-                cursor: "pointer",
-              }}
-              onMouseDown={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb, inset 2px 2px 0px #8a4853";
-              }}
-              onMouseUp={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-              }}
+              variant="vapor"
+              className={`w-4 h-4 p-0 border border-vapor-dark bg-[#c9858e] text-vapor-dark font-mono leading-none flex items-center justify-center shadow-win98-out active:shadow-win98-active cursor-pointer ${
+                label === "Minimise" ? "text-[10px]" : "text-[9px]"
+              }`}
             >
               {glyph}
-            </button>
+            </Button>
           ))}
         </div>
       </header>
-
-      {/* Content */}
-      <div 
+      <div
         id={`window-content-${win.id}`}
-        className="flex-1 overflow-auto bg-[#f4eceb] border m-0.5 relative"
-        style={{
-          boxShadow: "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #ffffff",
-          borderColor: "#1c1b1b"
-        }}
+        className="flex-1 overflow-auto bg-vapor-cream border border-vapor-dark m-0.5 relative shadow-win98-in"
       >
         {children}
       </div>
-
-      {/* Resize Handle */}
       {!win.isMaximized && (
         <div
           className="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize flex items-end justify-end p-0.5"

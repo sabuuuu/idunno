@@ -10,7 +10,7 @@ interface WindowPortalProps {
   y?: number;
   width?: number;
   height?: number;
-  props?: any;
+  props?: Record<string, unknown>;
   children: React.ReactNode;
 }
 
@@ -31,18 +31,20 @@ export function WindowPortal({ id, title, componentType, x = 50, y = 50, width =
       height,
       props,
     });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
 
     return () => {
       closeWindow(id);
     };
-  }, [id, title, componentType, x, y, width, height, openWindow, closeWindow]);
+  }, [id, title, componentType, x, y, width, height, props, openWindow, closeWindow]);
 
   useEffect(() => {
     if (!mounted) return;
     
     const el = document.getElementById(`window-content-${id}`);
     if (el) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setContainer(el);
     } else {
       // It might take a tick for Desktop to render the window

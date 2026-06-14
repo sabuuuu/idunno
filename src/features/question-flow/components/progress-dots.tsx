@@ -1,6 +1,6 @@
 interface ProgressDotsProps {
   total: number;
-  current: number; // 0-based index of current question
+  current: number;
 }
 
 export function ProgressDots({ total, current }: ProgressDotsProps) {

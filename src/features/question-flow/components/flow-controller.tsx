@@ -54,7 +54,7 @@ export function FlowController({
         isLastQuestion={currentIndex === questions.length - 1}
       />
 
-      <p style={{ fontFamily: "'VT323', monospace", fontSize: "18px", color: "#7a4a52" }}>
+      <p className="font-retro text-lg text-vapor-rose-dark">
         use arrow keys or click to select
       </p>
     </div>

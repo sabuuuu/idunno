@@ -5,7 +5,7 @@ export interface WindowState {
   id: string;
   title: string;
   componentType: "ask" | "result" | "aesthetic" | "generic" | "display" | "login" | "folder" | "music";
-  props?: any;
+  props?: Record<string, unknown>;
   x: number;
   y: number;
   width: number;
@@ -49,7 +49,7 @@ export function useWindowManager() {
 
 export function WindowManagerProvider({ children }: { children: React.ReactNode }) {
   const [windows, setWindows] = useState<WindowState[]>([]);
-  const [topZIndex, setTopZIndex] = useState(10);
+  const [, setTopZIndex] = useState(10);
   const [isInitialized, setIsInitialized] = useState(false);
   const [wallpaperSrc, setWallpaperSrc] = useState<string | null>(null);
   const [theme, setTheme] = useState<string>("default");
@@ -64,6 +64,7 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
         const parsed = JSON.parse(saved);
         const validWindows = parsed.filter((w: WindowState) => ["aesthetic", "display", "login", "folder", "music"].includes(w.componentType));
         const unfocused = validWindows.map((w: WindowState) => ({ ...w, isFocused: false }));
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWindows(unfocused);
 
         // Find highest zIndex to resume
@@ -75,18 +76,18 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       }
       const savedWallpaper = localStorage.getItem("desktop_wallpaper");
       if (savedWallpaper) setWallpaperSrc(savedWallpaper);
-      
+
       const savedTheme = localStorage.getItem("desktop_theme");
       if (savedTheme) setTheme(savedTheme);
-      
+
       const savedCursor = localStorage.getItem("desktop_cursor");
       if (savedCursor) setCursor(savedCursor);
-      
+
       const savedAudio = localStorage.getItem("desktop_audio");
       if (savedAudio !== null) {
         setBgAudioUrl(savedAudio === "none" ? null : savedAudio);
       }
-      
+
       const savedVolume = localStorage.getItem("desktop_audio_volume");
       if (savedVolume) setBgAudioVolume(parseFloat(savedVolume));
 
@@ -101,13 +102,12 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
       localStorage.setItem("desktop_windows", JSON.stringify(windows));
       if (wallpaperSrc) localStorage.setItem("desktop_wallpaper", wallpaperSrc);
       else localStorage.removeItem("desktop_wallpaper");
-      
+
       localStorage.setItem("desktop_theme", theme);
-      localStorage.setItem("desktop_cursor", cursor);
-      
+
       if (bgAudioUrl) localStorage.setItem("desktop_audio", bgAudioUrl);
       else localStorage.setItem("desktop_audio", "none");
-      
+
       localStorage.setItem("desktop_audio_volume", bgAudioVolume.toString());
 
       // Apply theme and cursor to body

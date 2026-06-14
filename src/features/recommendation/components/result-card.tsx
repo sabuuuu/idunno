@@ -1,27 +1,26 @@
-import * as React from "react";
-import { WindowTitleBar } from "~/components/WindowTitleBar";
 import { FeedbackButtons } from "~/features/feedback/components/feedback-buttons";
 import { useNavigate } from "@tanstack/react-router";
 import type { MediaResult } from "~/features/recommendation/types/recommendation";
+import { Button } from "~/components/ui/button";
+import { toggleWatchlist } from "~/features/feedback/server/feedback";
+import toast from "react-hot-toast";
 
 const TYPE_LABEL: Record<MediaResult["type"], string> = {
   movie: "MOVIE",
-  tv:    "TV SERIES",
+  tv: "TV SERIES",
   anime: "ANIME",
 };
 
-// Star rating — filled stars up to 5, capped at imdb-style 10-point scale
 function StarRating({ rating }: { rating: string }) {
   const num = parseFloat(rating);
   if (isNaN(num)) return null;
-  // Convert to 0-5 scale (IMDB is /10, MAL is /10)
   const stars = Math.round((num / 10) * 5);
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <span
           key={i}
-          style={{ color: i < stars ? "#8a4853" : "#D7C1C3", fontSize: "16px" }}
+          className={`text-base ${i < stars ? "text-vapor-rose-dark" : "text-border"}`}
         >
           ★
         </span>
@@ -40,106 +39,48 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
   const hasPoster = Boolean(result.poster && result.poster !== "N/A");
 
   return (
-    <div
-      className="w-full relative overflow-hidden"
-      style={{
-        maxWidth: "896px",
-        backgroundColor: "#F4ECEB",
-      }}
-    >
-      {/* Scanline sweep beam */}
+    <div className="w-full relative overflow-hidden max-w-[896px] bg-vapor-cream">
       <div className="scanline-beam" aria-hidden="true" />
 
 
 
       <div className="flex flex-col md:flex-row relative z-10">
-
-        {/* ── Left: Poster panel ── */}
         {hasPoster && (
-          <div
-            className="w-full md:w-1/2 p-3 flex flex-col items-center justify-center gap-2"
-            style={{ borderRight: "2px solid rgba(183,110,121,0.2)" }}
-          >
-            {/* Poster with pixel border + inset glow */}
-            <div
-              className="relative w-full"
-              style={{ border: "2px solid #B76E79", padding: "4px", backgroundColor: "#fff" }}
-            >
+          <div className="w-full md:w-1/2 p-3 flex flex-col items-center justify-center gap-2 border-r-2 border-vapor-rose/20">
+            <div className="relative w-full border-2 border-vapor-rose p-1 bg-white">
               <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ boxShadow: "inset 0 0 15px rgba(183,110,121,0.3)" }}
+                className="absolute inset-0 pointer-events-none shadow-[inset_0_0_15px_rgba(183,110,121,0.3)]"
               />
               <img
                 src={result.poster}
                 alt={`${result.title} poster`}
-                className="w-full object-cover"
-                style={{
-                  aspectRatio: "2/3",
-                  display: "block",
-                  filter: "grayscale(20%)",
-                  transition: "filter 0.5s",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.filter = "grayscale(0%)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.filter = "grayscale(20%)"; }}
+                className="w-full object-cover aspect-2/3 block grayscale-20 transition-all duration-500 hover:grayscale-0"
               />
             </div>
-
-            {/* Pixel dots below poster */}
             <div className="flex gap-2">
               {[0, 1, 2, 3].map((i) => (
                 <span
                   key={i}
-                  style={{
-                    display: "inline-block",
-                    width: "8px",
-                    height: "8px",
-                    backgroundColor: i === 0 ? "#8a4853" : "transparent",
-                    border: "1px solid #8a4853",
-                  }}
+                  className={`inline-block w-2 h-2 border border-vapor-rose-dark ${i === 0 ? "bg-vapor-rose-dark" : "bg-transparent"}`}
                 />
               ))}
             </div>
           </div>
         )}
-
-        {/* ── Right: Data panel ── */}
-        <div
-          className="flex flex-col gap-3 p-4 flex-1"
-          style={{ backgroundColor: "rgba(252,249,248,0.5)" }}
-        >
-          {/* Title + year badge */}
+        <div className="flex flex-col gap-3 p-4 flex-1 bg-[rgba(252,249,248,0.5)]">
           <div className="flex flex-col gap-2">
             <div className="flex items-start justify-between gap-3">
-              <h1
-                className="leading-none uppercase"
-                style={{ fontFamily: "'VT323', monospace", fontSize: "32px", color: "#8a4853" }}
-              >
+              <h1 className="leading-none uppercase font-retro text-[32px] text-vapor-rose-dark">
                 {result.title}
               </h1>
               {result.year && result.year !== "N/A" && (
-                <span
-                  className="shrink-0 flex items-center justify-center rounded-full text-[#8a4853]"
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    border: "2px solid #8a4853",
-                    padding: "0 10px",
-                    height: "28px",
-                    minWidth: "28px",
-                  }}
-                >
+                <span className="shrink-0 flex items-center justify-center rounded-full text-vapor-rose-dark font-mono text-[10px] font-bold border-2 border-vapor-rose-dark px-2.5 h-7 min-w-[28px]">
                   {result.year}
                 </span>
               )}
             </div>
-
-            {/* Type tag + stars */}
             <div className="flex items-center gap-4">
-              <span
-                className="inventory-tag px-2 py-1"
-                style={{ fontFamily: "'VT323', monospace", fontSize: "16px", color: "#8a4853" }}
-              >
+              <span className="inventory-tag px-2 py-1 font-retro text-base text-vapor-rose-dark">
                 {TYPE_LABEL[result.type]}
               </span>
               {result.rating && result.rating !== "N/A" && (
@@ -147,136 +88,61 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
               )}
             </div>
           </div>
-
-          {/* Speech bubble blockquote */}
           {result.rationale && (
             <div className="relative ml-4 mt-1">
-              {/* Arrow */}
               <div
-                className="absolute"
-                style={{
-                  left: "-10px",
-                  top: "20px",
-                  width: 0,
-                  height: 0,
-                  borderTop: "10px solid transparent",
-                  borderBottom: "10px solid transparent",
-                  borderRight: "10px solid #B76E79",
-                }}
+                className="absolute left-[-10px] top-[20px] w-0 h-0 border-y-10 border-y-transparent border-r-10 border-r-vapor-rose"
               />
               <div
-                className="absolute"
-                style={{
-                  left: "-6px",
-                  top: "22px",
-                  width: 0,
-                  height: 0,
-                  borderTop: "8px solid transparent",
-                  borderBottom: "8px solid transparent",
-                  borderRight: "8px solid #F4ECEB",
-                }}
+                className="absolute left-[-6px] top-[22px] w-0 h-0 border-y-8 border-y-transparent border-r-8 border-r-vapor-cream"
               />
-              <blockquote
-                className="italic leading-tight"
-                style={{
-                  fontFamily: "'VT323', monospace",
-                  fontSize: "20px",
-                  color: "#8a4853",
-                  backgroundColor: "#F4ECEB",
-                  border: "2px solid #B76E79",
-                  padding: "8px 12px",
-                }}
-              >
+              <blockquote className="italic leading-tight font-retro text-xl text-vapor-rose-dark bg-vapor-cream border-2 border-vapor-rose px-3 py-2">
                 "{result.rationale}"
               </blockquote>
             </div>
           )}
-
-          {/* Genre tags */}
           {result.genre && result.genre !== "N/A" && (
             <div className="flex flex-wrap gap-2">
               {result.genre.split(",").slice(0, 3).map((g) => (
                 <span
                   key={g}
-                  className="text-white uppercase"
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    backgroundColor: "#605b5a",
-                    borderRadius: "9999px",
-                    padding: "4px 12px",
-                  }}
+                  className="text-white uppercase font-mono text-[10px] font-bold tracking-widest bg-[#605b5a] rounded-full px-3 py-1"
                 >
                   {g.trim()}
                 </span>
               ))}
             </div>
           )}
-
-          {/* Plot */}
           {result.plot && result.plot !== "N/A" && (
-            <p
-              className="leading-relaxed"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
-                fontWeight: 400,
-                color: "#524345",
-              }}
-            >
+            <p className="leading-relaxed font-sans text-sm text-vapor-dark opacity-80">
               {result.plot}
             </p>
           )}
-
-          {/* Bottom actions */}
-          <div
-            className="mt-auto pt-4 flex flex-wrap items-center justify-between gap-2"
-            style={{ borderTop: "1px dashed rgba(183,110,121,0.3)" }}
-          >
+          <div className="mt-auto pt-4 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-vapor-rose/30">
             <FeedbackButtons sessionId={sessionId} />
-
             <div className="flex gap-2">
-              <button
+              <Button
+                variant="vapor-primary"
                 onClick={async () => {
                   try {
-                    const { toggleWatchlist } = await import("~/features/feedback/server/feedback");
                     await toggleWatchlist({ data: { sessionId, inWatchlist: true } });
-                    // Optional: show a toast
+                    toast.success("Added to watchlist");
                   } catch (e) {
-                    // Ignore or show error
+                    toast.error((e as Error).message || "Failed to add to watchlist");
                   }
                 }}
-                className="uppercase pixel-shadow-active"
-                style={{
-                  fontFamily: "'VT323', monospace",
-                  fontSize: "18px",
-                  color: "#ffffff",
-                  backgroundColor: "#8a4853",
-                  border: "2px solid #B76E79",
-                  padding: "6px 16px",
-                  letterSpacing: "0.05em",
-                }}
+                className="uppercase h-auto px-4 py-1.5"
               >
                 + WATCHLIST
-              </button>
+              </Button>
 
-              <button
+              <Button
+                variant="vapor-primary"
                 onClick={() => navigate({ to: "/ask" })}
-                className="uppercase pixel-shadow-active"
-                style={{
-                  fontFamily: "'VT323', monospace",
-                  fontSize: "18px",
-                  color: "#ffffff",
-                  backgroundColor: "#8a4853",
-                  border: "2px solid #B76E79",
-                  padding: "6px 16px",
-                  letterSpacing: "0.05em",
-                }}
+                className="uppercase h-auto px-4 py-1.5"
               >
                 NEW PICK
-              </button>
+              </Button>
             </div>
           </div>
         </div>

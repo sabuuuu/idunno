@@ -4,6 +4,7 @@ import * as React from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import toast from "react-hot-toast";
 import { useFeedback } from "~/features/feedback/hooks/use-feedback";
+import { Button } from "~/components/ui/button";
 
 interface FeedbackButtonsProps {
   sessionId: string;
@@ -26,12 +27,7 @@ export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
   if (submitted) {
     return (
       <p
-        style={{
-          fontFamily: "'Space Mono', monospace",
-          fontSize: "10px",
-          color: "#857374",
-          letterSpacing: "0.05em",
-        }}
+        className="font-mono text-[10px] text-vapor-dark opacity-80 tracking-widest uppercase"
       >
         THANKS FOR THE FEEDBACK.
       </p>
@@ -46,40 +42,16 @@ export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
           { value: -1 as const, Icon: ThumbsDown,  ariaLabel: "Thumbs down" },
         ] as const
       ).map(({ value, Icon, ariaLabel }) => (
-        <button
+        <Button
           key={value}
+          variant="outline"
           aria-label={ariaLabel}
           disabled={isPending}
           onClick={() => handleFeedback(value)}
-          className="pixel-shadow-active group"
-          style={{
-            width: "48px",
-            height: "48px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "2px solid #B76E79",
-            backgroundColor: "#ffffff",
-            cursor: "pointer",
-            boxShadow: "4px 4px 0px 0px #B76E79",
-            opacity: isPending ? 0.5 : 1,
-            transition: "transform 80ms, box-shadow 80ms",
-          }}
-          onMouseDown={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.transform = "translate(4px,4px)";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
-          }}
-          onMouseUp={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.transform = "";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0px 0px #B76E79";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.transform = "";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0px 0px #B76E79";
-          }}
+          className={`w-12 h-12 p-0 flex items-center justify-center border-2 border-vapor-rose bg-white shadow-[4px_4px_0_0_var(--color-vapor-rose)] transition-all duration-75 active:translate-x-1 active:translate-y-1 active:shadow-none hover:bg-vapor-cream ${isPending ? 'opacity-50' : 'opacity-100'}`}
         >
-          <Icon size={20} color="#8a4853" strokeWidth={1.75} />
-        </button>
+          <Icon size={20} className="text-vapor-rose-dark" strokeWidth={1.75} />
+        </Button>
       ))}
     </div>
   );

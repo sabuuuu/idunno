@@ -35,7 +35,6 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      // Retro fonts — Space Mono (navbar, labels) + VT323 (display text)
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -57,7 +56,7 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children: _children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>

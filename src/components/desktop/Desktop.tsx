@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Settings } from "lucide-react";
-import { useWindowManager, WindowManagerProvider } from "./useWindowManager";
+import { Button } from "~/components/ui/button";
+import { useWindowManager, WindowManagerProvider, type WindowState } from "./useWindowManager";
 import { Window } from "./Window";
 import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 import { AestheticWindow } from "./AestheticWindow";
@@ -10,45 +11,29 @@ import { FolderWindow } from "~/features/desktop-apps/FolderWindow";
 import { LoginWindow } from "~/features/desktop-apps/LoginWindow";
 import { getSessionUserServerFn } from "~/server/auth";
 import { useQuery } from "@tanstack/react-query";
-// ─── Top navbar — Win98 title bar style ────────────────────────────
+
 function TopBar() {
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-1 gap-2"
-      style={{
-        height: "28px",
-        backgroundColor: "#d4a0a8",
-        boxShadow:
-          "inset 0px 1px 0px #f4eceb, inset 1px 0px 0px #f4eceb, inset 0px -1px 0px #7a4a52, inset -1px 0px 0px #7a4a52",
-      }}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-1 gap-2 h-[28px] bg-vapor-pink shadow-win98-out">
       <div
-        className="flex items-center gap-2 flex-1 min-w-0 h-[20px] px-2 select-none"
-        style={{
-          background: "linear-gradient(to right, #8a4853, #b76e79)",
-          boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52",
-        }}
+        className="flex items-center gap-2 flex-1 min-w-0 h-5 px-2 select-none shadow-win98-active bg-linear-to-r from-vapor-rose-dark to-vapor-rose"
       >
-        <span style={{ fontSize: "12px", lineHeight: 1, color: "white" }} aria-hidden="true">♡</span>
-        <span
-          className="text-white leading-none truncate"
-          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px", fontWeight: 700, letterSpacing: "0.05em" }}
-        >
+        <span className="text-xs leading-none text-white" aria-hidden="true">♡</span>
+        <span className="text-white leading-none truncate font-pixel text-[8px] font-bold tracking-wider">
           IDONNU.EXE
         </span>
       </div>
 
-      <div className="flex gap-4 ml-2 mr-auto" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px", color: "#1c1b1b" }}>
-        <button className="hover:text-white transition-colors cursor-pointer">File</button>
-        <button className="hover:text-white transition-colors cursor-pointer">Edit</button>
-        <button className="hover:text-white transition-colors cursor-pointer">View</button>
-        <button className="hover:text-white transition-colors cursor-pointer">Help</button>
+      <div className="flex gap-1 ml-2 mr-auto font-pixel">
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">File</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">Edit</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">View</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">Help</Button>
       </div>
     </header>
   );
 }
 
-// ─── Bottom nav — Win98 taskbar style ──────────────────────────────
 function TaskbarClock() {
   const [time, setTime] = React.useState(() =>
     new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -63,20 +48,9 @@ function TaskbarClock() {
 
   return (
     <div
-      className="flex items-center justify-center px-3 h-full shrink-0"
-      style={{
-        boxShadow: "inset 1px 1px 0px #808080, inset -1px -1px 0px #ffffff",
-        minWidth: "60px",
-      }}
+      className="flex items-center justify-center px-3 h-full shrink-0 min-w-[60px] shadow-win98-in"
     >
-      <span
-        style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: "8px",
-          color: "#1c1b1b",
-          letterSpacing: "0.05em",
-        }}
-      >
+      <span className="font-pixel text-[8px] text-vapor-dark tracking-wider">
         {time}
       </span>
     </div>
@@ -88,104 +62,50 @@ function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center gap-1 px-1"
-      style={{
-        height: "44px",
-        backgroundColor: "#d4a0a8",
-        boxShadow:
-          "inset 0px 1px 0px #f4eceb, inset 1px 0px 0px #f4eceb, inset 0px -1px 0px #7a4a52, inset -1px 0px 0px #7a4a52",
-      }}
-    >
-      {/* ── Start button ── */}
-      <button
-        className="flex items-center gap-1.5 shrink-0 h-[26px] px-2"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center gap-1 px-1 h-[44px] bg-vapor-pink shadow-win98-out">
+      <Button
+        variant="vapor"
+        className="flex items-center gap-1.5 shrink-0 h-6 px-2 bg-vapor-rose"
         onClick={() => { navigate({ to: "/ask" }); }}
-        style={{
-          backgroundColor: "#b76e79",
-          boxShadow:
-            "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853",
-          border: "1px solid #1c1b1b",
-          cursor: "pointer",
-        }}
-        onMouseDown={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb, inset 2px 2px 0px #8a4853";
-        }}
-        onMouseUp={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853";
-        }}
       >
-        <span style={{ fontSize: "14px", lineHeight: 1, color: "white" }}>♡</span>
-        <span
-          style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: "8px",
-            color: "#f4eceb",
-            fontWeight: 700,
-            letterSpacing: "0.05em",
-          }}
-        >
+        <span className="text-sm leading-none text-white">♡</span>
+        <span className="font-pixel text-[8px] text-vapor-cream font-bold tracking-wider">
           START
         </span>
-      </button>
-
-      {/* ── Divider ── */}
+      </Button>
       <div
-        className="shrink-0 self-stretch my-1"
-        style={{
-          width: "2px",
-          boxShadow: "inset 1px 0px 0px #7a4a52, inset -1px 0px 0px #f4eceb",
-        }}
+        className="shrink-0 self-stretch my-1 w-[2px] shadow-[inset_1px_0_0_var(--color-vapor-rose-dark),inset_-1px_0_0_var(--color-vapor-cream)]"
       />
-
-      {/* ── Quick Launch ── */}
       <div className="flex items-center gap-1 px-1 shrink-0">
-        <button
+        <Button
+          variant="vapor"
           onClick={() => {
             openWindow({
               id: "display-properties",
               title: "DISPLAY.EXE",
-              componentType: "display" as any,
+              componentType: "display",
               x: typeof window !== "undefined" ? window.innerWidth / 2 - 200 : 200,
               y: typeof window !== "undefined" ? window.innerHeight / 2 - 175 : 100,
               width: 400,
               height: 350,
             });
           }}
-          className="w-6 h-6 flex items-center justify-center cursor-pointer active:translate-y-px"
+          className="w-6 h-6 flex items-center justify-center p-0 bg-[#c9858e]"
           title="Display Properties"
-          style={{
-            backgroundColor: "#c9858e",
-            border: "1px solid #1c1b1b",
-            boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52",
-          }}
         >
-          <Settings size={12} color="#1c1b1b" />
-        </button>
+          <Settings size={12} className="text-vapor-dark" />
+        </Button>
       </div>
-
-      {/* ── Divider ── */}
       <div
-        className="shrink-0 self-stretch my-1"
-        style={{
-          width: "2px",
-          boxShadow: "inset 1px 0px 0px #7a4a52, inset -1px 0px 0px #f4eceb",
-        }}
+        className="shrink-0 self-stretch my-1 w-[2px] shadow-[inset_1px_0_0_var(--color-vapor-rose-dark),inset_-1px_0_0_var(--color-vapor-cream)]"
       />
-
-      {/* ── Window Tabs ── */}
       <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-x-auto">
         {windows.filter((w) => w.componentType !== "aesthetic").map((win) => {
           const isActive = win.isFocused && !win.isMinimized;
           return (
-            <button
+            <Button
               key={win.id}
+              variant="vapor"
               onClick={() => {
                 if (isActive) {
                   minimizeWindow(win.id);
@@ -193,46 +113,22 @@ function BottomNav() {
                   focusWindow(win.id);
                 }
               }}
-              className="flex items-center gap-1.5 h-[26px] px-2 min-w-0 shrink-0 select-none"
-              style={{
-                backgroundColor: isActive ? "#b76e79" : "#c9858e",
-                border: "1px solid #1c1b1b",
-                boxShadow: isActive
-                  ? "inset 1px 1px 0px #7a4a52, inset -1px -1px 0px #f4eceb, inset 2px 2px 0px #8a4853"
-                  : "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, inset 2px 2px 0px #d4a0a8, inset -2px -2px 0px #8a4853",
-                maxWidth: "150px"
-              }}
+              className={`flex items-center gap-1.5 h-[26px] px-2 min-w-0 shrink-0 max-w-[150px] ${isActive ? 'bg-vapor-rose shadow-win98-active' : 'bg-[#c9858e] shadow-win98-out'}`}
             >
-              <span
-                className="truncate"
-                style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: "7px",
-                  color: isActive ? "#f4eceb" : "#1c1b1b",
-                  letterSpacing: "0.03em",
-                }}
-              >
+              <span className={`truncate font-pixel text-micro tracking-wide ${isActive ? 'text-vapor-cream' : 'text-vapor-dark'}`}>
                 {win.title}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
-
-      {/* ── System tray ── */}
       <div
-        className="shrink-0 self-stretch my-1 ml-1"
-        style={{
-          width: "2px",
-          boxShadow: "inset 1px 0px 0px #7a4a52, inset -1px 0px 0px #f4eceb",
-        }}
+        className="shrink-0 self-stretch my-1 ml-1 w-[2px] shadow-[inset_1px_0_0_var(--color-vapor-rose-dark),inset_-1px_0_0_var(--color-vapor-cream)]"
       />
       <TaskbarClock />
     </nav>
   );
 }
-
-// ─── Main desktop shell ─────────────────────────────────────────────
 
 function DesktopContent({ children }: { children: React.ReactNode }) {
   const { windows, openWindow, wallpaperSrc, bgAudioUrl, bgAudioVolume } = useWindowManager();
@@ -253,9 +149,9 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        hasAesthetic1 = parsed.some((w: any) => w.id === "aesthetic-1");
-        hasAesthetic2 = parsed.some((w: any) => w.id === "aesthetic-2");
-      } catch (e) {
+        hasAesthetic1 = parsed.some((w: WindowState) => w.id === "aesthetic-1");
+        hasAesthetic2 = parsed.some((w: WindowState) => w.id === "aesthetic-2");
+      } catch {
         // ignore
       }
     }
@@ -285,6 +181,7 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         props: { src: "/images/retro1.png" },
       });
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInitialized(true);
   }, [initialized, openWindow]);
 
@@ -295,36 +192,34 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         <img
           src={wallpaperSrc}
           alt="Desktop Wallpaper"
-          className="absolute inset-0 w-full h-full object-fill"
-          style={{ zIndex: 0 }}
+          className="absolute inset-0 w-full h-full object-fill z-0"
         />
       )}
       <div className="crt-overlay" aria-hidden="true" />
       {bgAudioUrl && (
-        <audio 
-          id="desktop-bg-audio" 
-          src={`/${bgAudioUrl}`} 
-          autoPlay 
-          loop 
-          ref={(el) => { if (el) el.volume = bgAudioVolume; }} 
+        <audio
+          id="desktop-bg-audio"
+          src={`/${bgAudioUrl}`}
+          autoPlay
+          loop
+          ref={(el) => { if (el) el.volume = bgAudioVolume; }}
         />
       )}
 
       <TopBar />
 
       <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ paddingTop: "28px", paddingBottom: "44px" }}
+        className="absolute inset-0 overflow-hidden pt-[28px] pb-[44px]"
       >
         <div className="scanline-beam" aria-hidden="true" />
 
         {/* Desktop Icons */}
-        <DesktopIcon id="icon-faves" label="FAVES.DIR" iconSrc="/folder.png" defaultX={20} defaultY={20} onDoubleClick={() => openWindow({ id: "faves-folder", title: "FAVES.DIR", componentType: "folder" as any, x: 100, y: 100, width: 400, height: 300, props: { folderType: "faves" } })} />
-        <DesktopIcon id="icon-watchlist" label="WATCHLIST.DIR" iconSrc="/folder.png" defaultX={20} defaultY={100} onDoubleClick={() => openWindow({ id: "watchlist-folder", title: "WATCHLIST.DIR", componentType: "folder" as any, x: 150, y: 150, width: 400, height: 300, props: { folderType: "watchlist" } })} />
-        <DesktopIcon id="icon-history" label="HISTORY.DIR" iconSrc="/folder.png" defaultX={20} defaultY={180} onDoubleClick={() => openWindow({ id: "history-folder", title: "HISTORY.DIR", componentType: "folder" as any, x: 200, y: 200, width: 400, height: 300, props: { folderType: "history" } })} />
+        <DesktopIcon id="icon-faves" label="FAVES.DIR" iconSrc="/folder.png" defaultX={20} defaultY={20} onDoubleClick={() => openWindow({ id: "faves-folder", title: "FAVES.DIR", componentType: "folder", x: 100, y: 100, width: 400, height: 300, props: { folderType: "faves" } })} />
+        <DesktopIcon id="icon-watchlist" label="WATCHLIST.DIR" iconSrc="/folder.png" defaultX={20} defaultY={100} onDoubleClick={() => openWindow({ id: "watchlist-folder", title: "WATCHLIST.DIR", componentType: "folder", x: 150, y: 150, width: 400, height: 300, props: { folderType: "watchlist" } })} />
+        <DesktopIcon id="icon-history" label="HISTORY.DIR" iconSrc="/folder.png" defaultX={20} defaultY={180} onDoubleClick={() => openWindow({ id: "history-folder", title: "HISTORY.DIR", componentType: "folder", x: 200, y: 200, width: 400, height: 300, props: { folderType: "history" } })} />
 
         {!user && (
-          <DesktopIcon id="icon-login" label="LOGIN.EXE" iconSrc="/folder.png" defaultX={20} defaultY={260} onDoubleClick={() => openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login" as any, x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 125 : 200, width: 350, height: 250 })} />
+          <DesktopIcon id="icon-login" label="LOGIN.EXE" iconSrc="/folder.png" defaultX={20} defaultY={260} onDoubleClick={() => openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 })} />
         )}
 
         {/* Windows Rendering */}
@@ -332,18 +227,16 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
           <Window key={win.id} window={win}>
             {win.componentType === "aesthetic" && (
               <AestheticWindow
-                src={win.id === "aesthetic-1" ? "/images/retro1.png" : win.id === "aesthetic-2" ? "/images/retro2.jpg" : win.props?.src}
+                src={win.id === "aesthetic-1" ? "/images/retro1.png" : win.id === "aesthetic-2" ? "/images/retro2.jpg" : (win.props?.src as string) || ""}
               />
             )}
-            {win.componentType === ("display" as any) && <DisplayPropertiesWindow />}
-            {win.componentType === ("login" as any) && <LoginWindow />}
-            {win.componentType === ("folder" as any) && <FolderWindow id={win.id} folderType={win.props?.folderType} />}
-            {/* The Window component renders #window-content-{win.id} where children are portaled */}
+            {win.componentType === "display" && <DisplayPropertiesWindow />}
+            {win.componentType === "login" && <LoginWindow />}
+            {win.componentType === "folder" && <FolderWindow id={win.id} folderType={win.props?.folderType as "history" | "faves" | "watchlist" | undefined} />}
           </Window>
         ))}
 
-        {/* Invisible container for route content. Children will portal themselves into windows */}
-        <div style={{ display: "none" }}>{children}</div>
+        <div className="hidden">{children}</div>
       </div>
 
       <BottomNav />

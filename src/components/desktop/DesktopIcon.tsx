@@ -21,8 +21,11 @@ export function DesktopIcon({ id, label, iconSrc, defaultX, defaultY, onDoubleCl
     const saved = localStorage.getItem(`icon_pos_${id}`);
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPosition(JSON.parse(saved));
-      } catch (e) { }
+      } catch {
+        // ignore
+      }
     }
   }, [id]);
 
@@ -88,23 +91,17 @@ export function DesktopIcon({ id, label, iconSrc, defaultX, defaultY, onDoubleCl
       }}
     >
       <div
-        className={`size-16 p-1.5 flex items-center justify-center ${isSelected ? "bg-[#000080]/30" : ""}`}
+        className={`size-16 p-1.5 flex items-center justify-center ${isSelected ? "bg-win98-blue/30" : ""}`}
         style={{ imageRendering: "pixelated" }}
       >
         <img
           src={iconSrc}
           alt={label}
-          className="w-full h-full object-contain pointer-events-none"
-          style={{ filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.5))" }}
+          className="w-full h-full object-contain pointer-events-none [filter:drop-shadow(2px_2px_0px_rgba(0,0,0,0.5))]"
         />
       </div>
       <span
-        className={`text-center px-1 leading-tight wrap-break-word ${isSelected ? "bg-[#000080] text-white dotted-focus" : "text-white drop-shadow-md"}`}
-        style={{
-          fontFamily: "'Space Mono', monospace",
-          fontSize: "11px",
-          textShadow: isSelected ? "none" : "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000",
-        }}
+        className={`text-center px-1 text-[11px] font-mono leading-tight wrap-break-word ${isSelected ? "bg-win98-blue text-white dotted-focus" : "text-white [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000]"}`}
       >
         {label}
       </span>

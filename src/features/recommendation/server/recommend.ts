@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getSessionUserServerFn } from "~/server/auth";
 import { db } from "~/lib/db";
 import { picks } from "~/lib/db/schema";
 import { getRecommendation } from "~/lib/llm/recommend";
@@ -31,7 +32,7 @@ export const recommend = createServerFn({ method: "POST" })
         .catch(() => undefined);
     }
 
-    const user = await import("~/server/auth").then(m => m.getSessionUserServerFn());
+    const user = await getSessionUserServerFn();
     const [pick] = await db
       .insert(picks)
       .values({

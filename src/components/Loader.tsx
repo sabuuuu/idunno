@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { LineSpinner } from 'ldrs/react'
 import 'ldrs/react/LineSpinner.css'
 
