@@ -31,9 +31,11 @@ export const recommend = createServerFn({ method: "POST" })
         .catch(() => undefined);
     }
 
+    const user = await import("~/server/auth").then(m => m.getSessionUserServerFn());
     const [pick] = await db
       .insert(picks)
       .values({
+        userId: user?.id ?? null,
         answers: data.answers,
         resultImdbId: imdbId ?? null,
         resultMalId: malId ?? null,

@@ -232,26 +232,52 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
 
           {/* Bottom actions */}
           <div
-            className="mt-auto pt-4 flex items-center justify-between"
+            className="mt-auto pt-4 flex flex-wrap items-center justify-between gap-2"
             style={{ borderTop: "1px dashed rgba(183,110,121,0.3)" }}
           >
             <FeedbackButtons sessionId={sessionId} />
 
-            <button
-              onClick={() => navigate({ to: "/ask" })}
-              className="uppercase pixel-shadow-active"
-              style={{
-                fontFamily: "'VT323', monospace",
-                fontSize: "18px",
-                color: "#ffffff",
-                backgroundColor: "#8a4853",
-                border: "2px solid #B76E79",
-                padding: "6px 16px",
-                letterSpacing: "0.05em",
-              }}
-            >
-              NEW PICK
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={async () => {
+                  try {
+                    const { toggleWatchlist } = await import("~/features/feedback/server/feedback");
+                    await toggleWatchlist({ data: { sessionId, inWatchlist: true } });
+                    // Optional: show a toast
+                  } catch (e) {
+                    // Ignore or show error
+                  }
+                }}
+                className="uppercase pixel-shadow-active"
+                style={{
+                  fontFamily: "'VT323', monospace",
+                  fontSize: "18px",
+                  color: "#ffffff",
+                  backgroundColor: "#8a4853",
+                  border: "2px solid #B76E79",
+                  padding: "6px 16px",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                + WATCHLIST
+              </button>
+
+              <button
+                onClick={() => navigate({ to: "/ask" })}
+                className="uppercase pixel-shadow-active"
+                style={{
+                  fontFamily: "'VT323', monospace",
+                  fontSize: "18px",
+                  color: "#ffffff",
+                  backgroundColor: "#8a4853",
+                  border: "2px solid #B76E79",
+                  padding: "6px 16px",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                NEW PICK
+              </button>
+            </div>
           </div>
         </div>
       </div>

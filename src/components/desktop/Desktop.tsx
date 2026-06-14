@@ -5,7 +5,11 @@ import { useWindowManager, WindowManagerProvider } from "./useWindowManager";
 import { Window } from "./Window";
 import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 import { AestheticWindow } from "./AestheticWindow";
-
+import { DesktopIcon } from "./DesktopIcon";
+import { FolderWindow } from "~/features/desktop-apps/FolderWindow";
+import { LoginWindow } from "~/features/desktop-apps/LoginWindow";
+import { getSessionUserServerFn } from "~/server/auth";
+import { useQuery } from "@tanstack/react-query";
 // ─── Top navbar — Win98 title bar style ────────────────────────────
 function TopBar() {
   return (
@@ -231,8 +235,13 @@ function BottomNav() {
 // ─── Main desktop shell ─────────────────────────────────────────────
 
 function DesktopContent({ children }: { children: React.ReactNode }) {
-  const { windows, openWindow, wallpaperSrc } = useWindowManager();
+  const { windows, openWindow, wallpaperSrc, bgAudioUrl, bgAudioVolume } = useWindowManager();
   const [initialized, setInitialized] = React.useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ["session-user"],
+    queryFn: () => getSessionUserServerFn(),
+  });
 
   React.useEffect(() => {
     if (initialized) return;
@@ -256,7 +265,7 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         id: "aesthetic-1",
         title: "SUNSET.GIF",
         componentType: "aesthetic",
-        x: 20,
+        x: 100,
         y: 40,
         width: 320,
         height: 260,
@@ -291,6 +300,15 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         />
       )}
       <div className="crt-overlay" aria-hidden="true" />
+      {bgAudioUrl && (
+        <audio 
+          id="desktop-bg-audio" 
+          src={`/${bgAudioUrl}`} 
+          autoPlay 
+          loop 
+          ref={(el) => { if (el) el.volume = bgAudioVolume; }} 
+        />
+      )}
 
       <TopBar />
 
@@ -299,6 +317,15 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         style={{ paddingTop: "28px", paddingBottom: "44px" }}
       >
         <div className="scanline-beam" aria-hidden="true" />
+
+        {/* Desktop Icons */}
+        <DesktopIcon id="icon-faves" label="FAVES.DIR" iconSrc="/folder.png" defaultX={20} defaultY={20} onDoubleClick={() => openWindow({ id: "faves-folder", title: "FAVES.DIR", componentType: "folder" as any, x: 100, y: 100, width: 400, height: 300, props: { folderType: "faves" } })} />
+        <DesktopIcon id="icon-watchlist" label="WATCHLIST.DIR" iconSrc="/folder.png" defaultX={20} defaultY={100} onDoubleClick={() => openWindow({ id: "watchlist-folder", title: "WATCHLIST.DIR", componentType: "folder" as any, x: 150, y: 150, width: 400, height: 300, props: { folderType: "watchlist" } })} />
+        <DesktopIcon id="icon-history" label="HISTORY.DIR" iconSrc="/folder.png" defaultX={20} defaultY={180} onDoubleClick={() => openWindow({ id: "history-folder", title: "HISTORY.DIR", componentType: "folder" as any, x: 200, y: 200, width: 400, height: 300, props: { folderType: "history" } })} />
+
+        {!user && (
+          <DesktopIcon id="icon-login" label="LOGIN.EXE" iconSrc="/folder.png" defaultX={20} defaultY={260} onDoubleClick={() => openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login" as any, x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 125 : 200, width: 350, height: 250 })} />
+        )}
 
         {/* Windows Rendering */}
         {windows.map((win) => (
@@ -309,6 +336,8 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
               />
             )}
             {win.componentType === ("display" as any) && <DisplayPropertiesWindow />}
+            {win.componentType === ("login" as any) && <LoginWindow />}
+            {win.componentType === ("folder" as any) && <FolderWindow id={win.id} folderType={win.props?.folderType} />}
             {/* The Window component renders #window-content-{win.id} where children are portaled */}
           </Window>
         ))}

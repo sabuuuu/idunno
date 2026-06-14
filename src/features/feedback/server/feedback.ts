@@ -19,3 +19,19 @@ export const submitFeedback = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
+
+export const toggleWatchlist = createServerFn({ method: "POST" })
+  .validator((data: { sessionId: string; inWatchlist: boolean }) => data)
+  .handler(async ({ data }) => {
+    const result = await db
+      .update(picks)
+      .set({ inWatchlist: data.inWatchlist })
+      .where(eq(picks.id, data.sessionId))
+      .returning({ id: picks.id });
+
+    if (result.length === 0) {
+      throw new Error("Could not update watchlist — session not found.");
+    }
+
+    return { ok: true };
+  });

@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 export interface WindowState {
   id: string;
   title: string;
-  componentType: "ask" | "result" | "aesthetic" | "generic" | "display";
+  componentType: "ask" | "result" | "aesthetic" | "generic" | "display" | "login" | "folder" | "music";
   props?: any;
   x: number;
   y: number;
@@ -27,6 +27,14 @@ export type WindowManagerAPI = {
   updateWindowSize: (id: string, width: number, height: number) => void;
   wallpaperSrc: string | null;
   setWallpaperSrc: (src: string | null) => void;
+  theme: string;
+  setTheme: (theme: string) => void;
+  cursor: string;
+  setCursor: (cursor: string) => void;
+  bgAudioUrl: string | null;
+  setBgAudioUrl: (url: string | null) => void;
+  bgAudioVolume: number;
+  setBgAudioVolume: (volume: number) => void;
 };
 
 const WindowManagerContext = React.createContext<WindowManagerAPI | null>(null);
@@ -44,13 +52,17 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
   const [topZIndex, setTopZIndex] = useState(10);
   const [isInitialized, setIsInitialized] = useState(false);
   const [wallpaperSrc, setWallpaperSrc] = useState<string | null>(null);
+  const [theme, setTheme] = useState<string>("default");
+  const [cursor, setCursor] = useState<string>("default");
+  const [bgAudioUrl, setBgAudioUrl] = useState<string | null>("music/1.mp3");
+  const [bgAudioVolume, setBgAudioVolume] = useState<number>(0.5);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("desktop_windows");
       if (saved) {
         const parsed = JSON.parse(saved);
-        const validWindows = parsed.filter((w: WindowState) => ["aesthetic", "display"].includes(w.componentType));
+        const validWindows = parsed.filter((w: WindowState) => ["aesthetic", "display", "login", "folder", "music"].includes(w.componentType));
         const unfocused = validWindows.map((w: WindowState) => ({ ...w, isFocused: false }));
         setWindows(unfocused);
 
@@ -62,9 +74,22 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
         setTopZIndex(maxZ);
       }
       const savedWallpaper = localStorage.getItem("desktop_wallpaper");
-      if (savedWallpaper) {
-        setWallpaperSrc(savedWallpaper);
+      if (savedWallpaper) setWallpaperSrc(savedWallpaper);
+      
+      const savedTheme = localStorage.getItem("desktop_theme");
+      if (savedTheme) setTheme(savedTheme);
+      
+      const savedCursor = localStorage.getItem("desktop_cursor");
+      if (savedCursor) setCursor(savedCursor);
+      
+      const savedAudio = localStorage.getItem("desktop_audio");
+      if (savedAudio !== null) {
+        setBgAudioUrl(savedAudio === "none" ? null : savedAudio);
       }
+      
+      const savedVolume = localStorage.getItem("desktop_audio_volume");
+      if (savedVolume) setBgAudioVolume(parseFloat(savedVolume));
+
     } catch (e) {
       console.error("Failed to load window state", e);
     }
@@ -74,13 +99,21 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem("desktop_windows", JSON.stringify(windows));
-      if (wallpaperSrc) {
-        localStorage.setItem("desktop_wallpaper", wallpaperSrc);
-      } else {
-        localStorage.removeItem("desktop_wallpaper");
-      }
+      if (wallpaperSrc) localStorage.setItem("desktop_wallpaper", wallpaperSrc);
+      else localStorage.removeItem("desktop_wallpaper");
+      
+      localStorage.setItem("desktop_theme", theme);
+      localStorage.setItem("desktop_cursor", cursor);
+      
+      if (bgAudioUrl) localStorage.setItem("desktop_audio", bgAudioUrl);
+      else localStorage.setItem("desktop_audio", "none");
+      
+      localStorage.setItem("desktop_audio_volume", bgAudioVolume.toString());
+
+      // Apply theme and cursor to body
+      document.body.className = `theme-${theme} cursor-${cursor}`;
     }
-  }, [windows, wallpaperSrc, isInitialized]);
+  }, [windows, wallpaperSrc, theme, cursor, bgAudioUrl, bgAudioVolume, isInitialized]);
 
   const openWindow = useCallback(
     (
@@ -166,6 +199,14 @@ export function WindowManagerProvider({ children }: { children: React.ReactNode 
         updateWindowSize,
         wallpaperSrc,
         setWallpaperSrc,
+        theme,
+        setTheme,
+        cursor,
+        setCursor,
+        bgAudioUrl,
+        setBgAudioUrl,
+        bgAudioVolume,
+        setBgAudioVolume,
       }}
     >
       {children}

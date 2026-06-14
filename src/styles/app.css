@@ -50,6 +50,16 @@
   100% { top: 100%; }
 }
 
+@keyframes marquee {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 5s linear infinite;
+}
+
 /* ─── Pixel / retro utilities ─────────────────────────────────────── */
 
 .pixel-border {
@@ -191,6 +201,77 @@
     color: var(--foreground);
     @apply antialiased;
     overflow-x: hidden;
+  }
+  
+  /* Cursors */
+  body.cursor-retro { cursor: url('/cursors/retro.png'), auto; }
+  body.cursor-retro * { cursor: url('/cursors/retro.png'), auto !important; }
+  
+  body.cursor-crosshair { cursor: crosshair; }
+  body.cursor-crosshair * { cursor: crosshair !important; }
+  
+  body.cursor-wait { cursor: wait; }
+  body.cursor-wait * { cursor: wait !important; }
+
+  /* Themes */
+  body.theme-vaporwave {
+    --background: #ffb7b2;
+    --foreground: #4a0e4e;
+    --card: #ffdac1;
+    --card-foreground: #4a0e4e;
+    --popover: #ffdac1;
+    --popover-foreground: #4a0e4e;
+    --primary: #81b7d2;
+    --primary-foreground: #ffffff;
+    --secondary: #ffb7b2;
+    --secondary-foreground: #4a0e4e;
+    --muted: #e2f0cb;
+    --muted-foreground: #81b7d2;
+    --accent: #b5ead7;
+    --accent-foreground: #4a0e4e;
+    --border: #81b7d2;
+    --input: #ffdac1;
+    --ring: #b5ead7;
+  }
+
+  body.theme-matrix {
+    --background: #000000;
+    --foreground: #00ff00;
+    --card: #0a0a0a;
+    --card-foreground: #00ff00;
+    --popover: #0a0a0a;
+    --popover-foreground: #00ff00;
+    --primary: #008f11;
+    --primary-foreground: #00ff00;
+    --secondary: #003b00;
+    --secondary-foreground: #00ff00;
+    --muted: #001f00;
+    --muted-foreground: #008f11;
+    --accent: #00ff41;
+    --accent-foreground: #000000;
+    --border: #008f11;
+    --input: #001f00;
+    --ring: #00ff41;
+  }
+  
+  body.theme-win98 {
+    --background: #008080;
+    --foreground: #000000;
+    --card: #c0c0c0;
+    --card-foreground: #000000;
+    --popover: #c0c0c0;
+    --popover-foreground: #000000;
+    --primary: #000080;
+    --primary-foreground: #ffffff;
+    --secondary: #c0c0c0;
+    --secondary-foreground: #000000;
+    --muted: #dfdfdf;
+    --muted-foreground: #808080;
+    --accent: #000080;
+    --accent-foreground: #ffffff;
+    --border: #808080;
+    --input: #ffffff;
+    --ring: #000000;
   }
 
   .using-mouse * {
