@@ -36,11 +36,12 @@ function TopBar() {
 }
 
 function TaskbarClock() {
-  const [time, setTime] = React.useState(() =>
-    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-  );
+  const [time, setTime] = React.useState("");
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
+    setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     const t = setInterval(() => {
       setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     }, 10_000);
@@ -52,7 +53,7 @@ function TaskbarClock() {
       className="flex items-center justify-center px-3 h-full shrink-0 min-w-[60px] shadow-win98-in"
     >
       <span className="font-pixel text-[8px] text-vapor-dark tracking-wider">
-        {time}
+        {mounted ? time : "00:00"}
       </span>
     </div>
   );
