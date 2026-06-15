@@ -92,7 +92,7 @@ export function Window({ window: win, children }: { window: WindowState; childre
         className="flex items-center justify-between px-1 gap-2 m-0.5"
         style={{
           height: "22px",
-          backgroundColor: win.isFocused ? undefined : "#c9858e", // unfocused background
+          backgroundColor: win.isFocused ? undefined : "var(--color-vapor-muted)", // unfocused background
           background: win.isFocused ? "linear-gradient(to right, #8a4853, #b76e79)" : undefined,
           boxShadow: win.isFocused ? "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52" : "inset 1px 1px 0px #e0aeb6, inset -1px -1px 0px #7a4a52",
         }}
@@ -125,7 +125,7 @@ export function Window({ window: win, children }: { window: WindowState; childre
               aria-label={label}
               onClick={onClick}
               variant="vapor"
-              className={`w-4 h-4 p-0 border border-vapor-dark bg-[#c9858e] text-vapor-dark font-mono leading-none flex items-center justify-center shadow-win98-out active:shadow-win98-active cursor-pointer ${
+              className={`w-4 h-4 p-0 border border-vapor-dark bg-vapor-muted text-vapor-dark font-mono leading-none flex items-center justify-center shadow-win98-out active:shadow-win98-active cursor-pointer ${
                 label === "Minimise" ? "text-[10px]" : "text-[9px]"
               }`}
             >

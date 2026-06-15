@@ -4,6 +4,9 @@ import type { MediaResult } from "~/features/recommendation/types/recommendation
 import { Button } from "~/components/ui/button";
 import { toggleWatchlist } from "~/features/feedback/server/feedback";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { getSessionUserServerFn } from "~/server/auth";
+import { useWindowManager } from "~/components/desktop/useWindowManager";
 
 const TYPE_LABEL: Record<MediaResult["type"], string> = {
   movie: "MOVIE",
@@ -36,6 +39,11 @@ interface ResultCardProps {
 
 export function ResultCard({ result, sessionId }: ResultCardProps) {
   const navigate = useNavigate();
+  const { openWindow } = useWindowManager();
+  const { data: user } = useQuery({
+    queryKey: ["session-user"],
+    queryFn: () => getSessionUserServerFn(),
+  });
   const hasPoster = Boolean(result.poster && result.poster !== "N/A");
 
   return (
@@ -106,7 +114,7 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
               {result.genre.split(",").slice(0, 3).map((g) => (
                 <span
                   key={g}
-                  className="text-white uppercase font-mono text-[10px] font-bold tracking-widest bg-[#605b5a] rounded-full px-3 py-1"
+                  className="text-white uppercase font-mono text-[10px] font-bold tracking-widest bg-vapor-tag rounded-full px-3 py-1"
                 >
                   {g.trim()}
                 </span>
@@ -122,8 +130,12 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
             <FeedbackButtons sessionId={sessionId} />
             <div className="flex gap-2">
               <Button
-                variant="vapor-primary"
+                variant="vapor"
                 onClick={async () => {
+                  if (!user) {
+                    openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 });
+                    return;
+                  }
                   try {
                     await toggleWatchlist({ data: { sessionId, inWatchlist: true } });
                     toast.success("Added to watchlist");
@@ -131,15 +143,15 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
                     toast.error((e as Error).message || "Failed to add to watchlist");
                   }
                 }}
-                className="uppercase h-auto px-4 py-1.5"
+                className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
               >
                 + WATCHLIST
               </Button>
 
               <Button
-                variant="vapor-primary"
+                variant="vapor"
                 onClick={() => navigate({ to: "/ask" })}
-                className="uppercase h-auto px-4 py-1.5"
+                className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
               >
                 NEW PICK
               </Button>

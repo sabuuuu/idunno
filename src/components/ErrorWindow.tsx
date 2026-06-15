@@ -84,7 +84,7 @@ export function ErrorWindow({
               <Button
                 onClick={onSecondary}
                 variant="vapor"
-                className="font-pixel text-[9px] px-5 py-2.5 h-auto tracking-[0.06em] min-w-[120px] cursor-pointer text-vapor-dark bg-[#c9858e] shadow-win98-out"
+                className="font-pixel text-[9px] px-5 py-2.5 h-auto tracking-[0.06em] min-w-[120px] cursor-pointer text-vapor-dark bg-vapor-muted shadow-win98-out"
               >
                 {secondaryLabel}
               </Button>

@@ -1,6 +1,9 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getFolderItemsServerFn } from "~/server/lists";
+import { getSessionUserServerFn } from "~/server/auth";
+import { useWindowManager } from "~/components/desktop/useWindowManager";
+import { Button } from "~/components/ui/button";
 interface FolderWindowProps {
   id: string;
   folderType?: "faves" | "watchlist" | "history";
@@ -8,11 +11,32 @@ interface FolderWindowProps {
 
 export function FolderWindow({ id: _id, folderType = "history" }: FolderWindowProps) {
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [localHistory, setLocalHistory] = React.useState<any[]>([]);
+  const { openWindow } = useWindowManager();
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ["session-user"],
+    queryFn: () => getSessionUserServerFn(),
+  });
+
+  const { data: dbItems = [], isLoading: isItemsLoading } = useQuery({
     queryKey: ["folder-items", folderType],
     queryFn: () => getFolderItemsServerFn({ data: folderType }),
+    enabled: !!user,
   });
+
+  React.useEffect(() => {
+    if (folderType === "history") {
+      try {
+        setLocalHistory(JSON.parse(localStorage.getItem("idunno_history") || "[]"));
+      } catch (e) {}
+    }
+  }, [folderType]);
+
+  const items = user ? dbItems : (folderType === "history" ? localHistory : []);
+  const isLoading = isUserLoading || (user ? isItemsLoading : false);
+
+  const needsLogin = !user && !isUserLoading && (folderType === "faves" || folderType === "watchlist");
 
   return (
     <div className="flex flex-col h-full bg-white text-vapor-dark" onClick={() => setSelectedId(null)}>
@@ -27,6 +51,16 @@ export function FolderWindow({ id: _id, folderType = "history" }: FolderWindowPr
         {isLoading ? (
           <div className="w-full text-center mt-10 text-vapor-rose-dark font-mono text-xs">
             Loading...
+          </div>
+        ) : needsLogin ? (
+          <div className="w-full flex flex-col items-center justify-center gap-4 text-center mt-10 p-4">
+            <div className="text-4xl grayscale opacity-70">🔒</div>
+            <div className="font-pixel text-xs text-vapor-rose-dark leading-relaxed">
+              Please log in to view your {folderType}.
+            </div>
+            <Button variant="vapor" className="font-pixel text-micro tracking-wide" onClick={() => openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 })}>
+              LOGIN.EXE
+            </Button>
           </div>
         ) : items.length === 0 ? (
           <div className="w-full text-center mt-10 text-vapor-rose-dark font-mono text-xs">
@@ -48,7 +82,7 @@ export function FolderWindow({ id: _id, folderType = "history" }: FolderWindowPr
               <div className={`w-10 h-10 p-1 flex items-center justify-center [image-rendering:pixelated] ${selectedId === item.id ? "bg-win98-blue/30" : ""}`}>
                 <span className="text-3xl">📄</span>
               </div>
-              <span className={`text-center px-1 leading-tight wrap-break-wZord w-full font-mono text-[11px] ${selectedId === item.id ? "bg-win98-blue text-white dotted-focus" : ""}`}>
+              <span className={`text-center px-1 leading-tight wrap-break-word w-full font-mono text-[11px] ${selectedId === item.id ? "bg-win98-blue text-white dotted-focus" : ""}`}>
                 {item.title}
               </span>
             </div>

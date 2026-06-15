@@ -32,8 +32,7 @@ export function WindowTitleBar({ label }: WindowTitleBarProps) {
             key={btnLabel}
             variant="vapor"
             aria-label={btnLabel}
-            className={`w-[18px] h-[18px] flex items-center justify-center p-0 text-vapor-dark bg-[#c9858e] shadow-win98-out ${btnLabel === "Minimise" ? "text-[10px]" : "text-[9px]"
-              }`}
+            className={`w-[18px] h-[18px] flex items-center justify-center p-0 text-vapor-dark bg-vapor-muted shadow-win98-out ${btnLabel === "Minimise" ? "text-[10px]" : "text-[9px]"}`}
           >
             {glyph}
           </Button>

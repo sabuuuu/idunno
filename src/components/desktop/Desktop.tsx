@@ -4,13 +4,14 @@ import { Settings } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useWindowManager, WindowManagerProvider, type WindowState } from "./useWindowManager";
 import { Window } from "./Window";
-import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 import { AestheticWindow } from "./AestheticWindow";
 import { DesktopIcon } from "./DesktopIcon";
 import { FolderWindow } from "~/features/desktop-apps/FolderWindow";
 import { LoginWindow } from "~/features/desktop-apps/LoginWindow";
+import { LogoutWindow } from "~/features/desktop-apps/LogoutWindow";
 import { getSessionUserServerFn } from "~/server/auth";
 import { useQuery } from "@tanstack/react-query";
+import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 
 function TopBar() {
   return (
@@ -25,10 +26,10 @@ function TopBar() {
       </div>
 
       <div className="flex gap-1 ml-2 mr-auto font-pixel">
-        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">File</Button>
-        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">Edit</Button>
-        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">View</Button>
-        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-[#c9858e] shadow-win98-out">Help</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-vapor-muted shadow-win98-out">File</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-vapor-muted shadow-win98-out">Edit</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-vapor-muted shadow-win98-out">View</Button>
+        <Button variant="vapor" className="h-5 text-micro text-vapor-dark cursor-pointer px-1.5 bg-vapor-muted shadow-win98-out">Help</Button>
       </div>
     </header>
   );
@@ -61,6 +62,11 @@ function BottomNav() {
   const { windows, focusWindow, minimizeWindow, openWindow } = useWindowManager();
   const navigate = useNavigate();
 
+  const { data: user } = useQuery({
+    queryKey: ["session-user"],
+    queryFn: () => getSessionUserServerFn(),
+  });
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center gap-1 px-1 h-[44px] bg-vapor-pink shadow-win98-out">
       <Button
@@ -90,11 +96,31 @@ function BottomNav() {
               height: 350,
             });
           }}
-          className="w-6 h-6 flex items-center justify-center p-0 bg-[#c9858e]"
+          className="w-6 h-6 flex items-center justify-center p-0 bg-vapor-muted"
           title="Display Properties"
         >
           <Settings size={12} className="text-vapor-dark" />
         </Button>
+        {user && (
+          <Button
+            variant="vapor"
+            onClick={() => {
+              openWindow({
+                id: "logout-window",
+                title: "LOGOUT.EXE",
+                componentType: "logout",
+                x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200,
+                y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200,
+                width: 350,
+                height: 250,
+              });
+            }}
+            className="w-6 h-6 flex items-center justify-center p-0 bg-vapor-muted"
+            title="Log Out"
+          >
+            <img src="/profile.png" className="w-5 h-5 [image-rendering:pixelated]" alt="User Profile" />
+          </Button>
+        )}
       </div>
       <div
         className="shrink-0 self-stretch my-1 w-[2px] shadow-[inset_1px_0_0_var(--color-vapor-rose-dark),inset_-1px_0_0_var(--color-vapor-cream)]"
@@ -113,7 +139,7 @@ function BottomNav() {
                   focusWindow(win.id);
                 }
               }}
-              className={`flex items-center gap-1.5 h-[26px] px-2 min-w-0 shrink-0 max-w-[150px] ${isActive ? 'bg-vapor-rose shadow-win98-active' : 'bg-[#c9858e] shadow-win98-out'}`}
+              className={`flex items-center gap-1.5 h-[26px] px-2 min-w-0 shrink-0 max-w-[150px] ${isActive ? 'bg-vapor-rose shadow-win98-active' : 'bg-vapor-muted shadow-win98-out'}`}
             >
               <span className={`truncate font-pixel text-micro tracking-wide ${isActive ? 'text-vapor-cream' : 'text-vapor-dark'}`}>
                 {win.title}
@@ -214,13 +240,9 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
         <div className="scanline-beam" aria-hidden="true" />
 
         {/* Desktop Icons */}
-        <DesktopIcon id="icon-faves" label="FAVES.DIR" iconSrc="/folder.png" defaultX={20} defaultY={20} onDoubleClick={() => openWindow({ id: "faves-folder", title: "FAVES.DIR", componentType: "folder", x: 100, y: 100, width: 400, height: 300, props: { folderType: "faves" } })} />
-        <DesktopIcon id="icon-watchlist" label="WATCHLIST.DIR" iconSrc="/folder.png" defaultX={20} defaultY={100} onDoubleClick={() => openWindow({ id: "watchlist-folder", title: "WATCHLIST.DIR", componentType: "folder", x: 150, y: 150, width: 400, height: 300, props: { folderType: "watchlist" } })} />
+        <DesktopIcon id="icon-faves" label="FAVES.DIR" iconSrc="/folder.png" defaultX={20} defaultY={20} onDoubleClick={() => openWindow({ id: "faves-folder", title: "FAVES.DIR", componentType: "folder", x: 100, y: 100, width: 400, height: 400, props: { folderType: "faves" } })} />
+        <DesktopIcon id="icon-watchlist" label="WATCHLIST.DIR" iconSrc="/folder.png" defaultX={20} defaultY={100} onDoubleClick={() => openWindow({ id: "watchlist-folder", title: "WATCHLIST.DIR", componentType: "folder", x: 150, y: 150, width: 400, height: 400, props: { folderType: "watchlist" } })} />
         <DesktopIcon id="icon-history" label="HISTORY.DIR" iconSrc="/folder.png" defaultX={20} defaultY={180} onDoubleClick={() => openWindow({ id: "history-folder", title: "HISTORY.DIR", componentType: "folder", x: 200, y: 200, width: 400, height: 300, props: { folderType: "history" } })} />
-
-        {!user && (
-          <DesktopIcon id="icon-login" label="LOGIN.EXE" iconSrc="/folder.png" defaultX={20} defaultY={260} onDoubleClick={() => openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 })} />
-        )}
 
         {/* Windows Rendering */}
         {windows.map((win) => (
@@ -232,6 +254,7 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
             )}
             {win.componentType === "display" && <DisplayPropertiesWindow />}
             {win.componentType === "login" && <LoginWindow />}
+            {win.componentType === "logout" && <LogoutWindow />}
             {win.componentType === "folder" && <FolderWindow id={win.id} folderType={win.props?.folderType as "history" | "faves" | "watchlist" | undefined} />}
           </Window>
         ))}

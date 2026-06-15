@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { loginServerFn } from "~/server/auth";
 import { useWindowManager } from "~/components/desktop/useWindowManager";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
@@ -9,7 +10,9 @@ export function LoginWindow() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { closeWindow, openWindow } = useWindowManager();
+  const [successState, setSuccessState] = useState<{ isNewUser: boolean; username: string } | null>(null);
+  const { closeWindow } = useWindowManager();
+  const queryClient = useQueryClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,33 +26,8 @@ export function LoginWindow() {
     try {
       const res = await loginServerFn({ data: { username, password } });
       if (res.success) {
-        closeWindow("login-window");
-        if (res.isNewUser) {
-          openWindow({
-            id: "info-dialog",
-            title: "INFO.EXE",
-            componentType: "generic",
-            x: typeof window !== "undefined" ? window.innerWidth / 2 - 150 : 200,
-            y: typeof window !== "undefined" ? window.innerHeight / 2 - 100 : 200,
-            width: 300,
-            height: 350,
-            props: {
-              content: (
-                <div className="flex flex-col items-center justify-center p-4 h-full text-center bg-vapor-cream">
-                  <div className="text-2xl mb-2">⚠️</div>
-                  <p className="font-sans text-sm mb-4">Welcome, new user! Please keep your password safe!</p>
-                  <Button
-                    variant="vapor"
-                    onClick={() => closeWindow("info-dialog")}
-                  >
-                    OK
-                  </Button>
-                </div>
-              )
-            }
-          });
-        }
-        window.location.reload();
+        await queryClient.invalidateQueries({ queryKey: ["session-user"] });
+        setSuccessState({ isNewUser: res.isNewUser, username });
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -61,6 +39,33 @@ export function LoginWindow() {
       setLoading(false);
     }
   };
+
+  if (successState) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 bg-vapor-cream h-full text-center gap-2">
+        <div className="w-[100px] h-[90px] flex items-center justify-center bg-vapor-rose-dark shadow-win98-in">
+          <img src="/kitty.png" alt="Kitty" className="h-[80px] w-[100px]" />
+        </div>
+        <p className="font-bold text-sm text-vapor-dark">
+          {successState.isNewUser
+            ? `Welcome, ${successState.username}!`
+            : `Welcome back, ${successState.username}!`}
+        </p>
+        {successState.isNewUser && (
+          <p className="font-sans text-xs text-vapor-rose-dark text-center">
+            Your account is ready !!
+          </p>
+        )}
+        <Button
+          variant="vapor"
+          className="font-pixel text-micro tracking-wide w-20 mt-2"
+          onClick={() => closeWindow("login-window")}
+        >
+          OK
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col p-4 bg-vapor-cream h-full font-sans text-vapor-dark">
@@ -102,7 +107,7 @@ export function LoginWindow() {
             type="submit"
             disabled={loading}
             variant="vapor"
-            className="w-20 disabled:opacity-50"
+            className="w-20 disabled:opacity-50 font-pixel text-micro tracking-wide"
           >
             {loading ? "..." : "OK"}
           </Button>
@@ -110,7 +115,7 @@ export function LoginWindow() {
             type="button"
             onClick={() => closeWindow("login-window")}
             variant="vapor"
-            className="w-20"
+            className="w-20 font-pixel text-micro tracking-wide"
           >
             Cancel
           </Button>

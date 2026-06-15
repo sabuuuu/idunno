@@ -20,9 +20,25 @@ function AskPage() {
 
   function handleComplete(answers: Record<string, string>) {
     submitAnswers(answers, {
-      onSuccess: ({ sessionId }) => {
+      onSuccess: (result) => {
+        try {
+          const existing = JSON.parse(localStorage.getItem("idunno_history") || "[]");
+          const newItem = {
+            id: result.sessionId,
+            title: result.title,
+            resultImdbId: result.imdbId,
+            resultMalId: result.malId,
+            type: result.type,
+            rationale: result.rationale,
+            createdAt: new Date().toISOString()
+          };
+          localStorage.setItem("idunno_history", JSON.stringify([newItem, ...existing]));
+        } catch (e) {
+          console.error("Failed to save history to localStorage", e);
+        }
+
         setIsNavigating(true);
-        navigate({ to: "/result/$sessionId", params: { sessionId } });
+        navigate({ to: "/result/$sessionId", params: { sessionId: result.sessionId } });
       },
       onError: (err) => {
         setIsNavigating(false);

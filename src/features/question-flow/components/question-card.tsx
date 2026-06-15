@@ -82,7 +82,7 @@ export function QuestionCard({
             variant="vapor"
             onClick={onBack ?? undefined}
             disabled={!onBack}
-            className="h-auto px-6 py-2 text-vapor-dark disabled:opacity-30 disabled:cursor-not-allowed font-pixel text-xxs tracking-[0.08em] bg-[#c9858e] shadow-win98-out"
+            className="h-auto px-6 py-2 text-vapor-dark disabled:opacity-30 disabled:cursor-not-allowed font-pixel text-xxs tracking-[0.08em] bg-vapor-muted shadow-win98-out"
           >
             ◀ BACK
           </Button>

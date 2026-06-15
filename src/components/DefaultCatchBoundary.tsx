@@ -24,7 +24,7 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
             router.invalidate()
           }}
           variant="vapor"
-          className="uppercase font-pixel text-xxs px-4 py-1.5 h-auto cursor-pointer text-vapor-dark bg-[#c9858e] shadow-win98-out"
+          className="uppercase font-pixel text-xxs px-4 py-1.5 h-auto cursor-pointer text-vapor-dark bg-vapor-muted shadow-win98-out"
         >
           Try Again
         </Button>
