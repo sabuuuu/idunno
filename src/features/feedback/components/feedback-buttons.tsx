@@ -4,6 +4,9 @@ import * as React from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import toast from "react-hot-toast";
 import { useFeedback } from "~/features/feedback/hooks/use-feedback";
+import { useQuery } from "@tanstack/react-query";
+import { getSessionUserServerFn } from "~/server/auth";
+import { useWindowManager } from "~/components/desktop/useWindowManager";
 import { Button } from "~/components/ui/button";
 
 interface FeedbackButtonsProps {
@@ -14,7 +17,17 @@ export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
   const { mutate, data, isPending } = useFeedback();
   const submitted = data?.ok === true;
 
+  const { data: user } = useQuery({
+    queryKey: ["session-user"],
+    queryFn: () => getSessionUserServerFn(),
+  });
+  const { openWindow } = useWindowManager();
+
   function handleFeedback(value: 1 | -1) {
+    if (!user) {
+      openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 });
+      return;
+    }
     mutate(
       { sessionId, value },
       {
