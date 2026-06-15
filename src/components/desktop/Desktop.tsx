@@ -73,7 +73,18 @@ function BottomNav() {
       <Button
         variant="vapor"
         className="flex items-center gap-1.5 shrink-0 h-6 px-2 bg-vapor-rose"
-        onClick={() => { navigate({ to: "/ask" }); }}
+        onClick={() => {
+          openWindow({
+            id: "ask-window",
+            title: "QUEST.EXE",
+            componentType: "ask",
+            x: typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 700) / 2) : 100,
+            y: typeof window !== "undefined" ? Math.max(0, (window.innerHeight - 750) / 2) : 50,
+            width: 700,
+            height: 700,
+          });
+          navigate({ to: "/ask" });
+        }}
       >
         <span className="text-sm leading-none text-white">♡</span>
         <span className="font-pixel text-[8px] text-vapor-cream font-bold tracking-wider">
