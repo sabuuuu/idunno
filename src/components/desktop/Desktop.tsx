@@ -12,6 +12,8 @@ import { LogoutWindow } from "~/features/desktop-apps/LogoutWindow";
 import { getSessionUserServerFn } from "~/server/auth";
 import { useQuery } from "@tanstack/react-query";
 import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
+import { ShareDialog } from "~/features/recommendation/components/share-dialog";
+import { ConvinceWindow } from "~/features/recommendation/components/convince-window";
 
 function TopBar() {
   return (
@@ -268,6 +270,22 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
             {win.componentType === "login" && <LoginWindow />}
             {win.componentType === "logout" && <LogoutWindow />}
             {win.componentType === "folder" && <FolderWindow id={win.id} folderType={win.props?.folderType as "history" | "faves" | "watchlist" | undefined} />}
+            {win.componentType === "share" && (
+              <ShareDialog
+                id={win.id}
+                title={win.props?.title as string}
+                year={win.props?.year as string}
+                type={win.props?.type as "movie" | "tv" | "anime"}
+                imdbId={win.props?.imdbId as string | undefined}
+                malId={win.props?.malId as number | undefined}
+              />
+            )}
+            {win.componentType === "convince" && (
+              <ConvinceWindow
+                id={win.id}
+                sessionId={win.props?.sessionId as string}
+              />
+            )}
           </Window>
         ))}
 

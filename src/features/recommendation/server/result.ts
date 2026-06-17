@@ -44,6 +44,9 @@ export const getResult = createServerFn({ method: "GET" })
         rating: anime.score ? String(anime.score) : "N/A",
         type: "anime",
         rationale: pick.rationale ?? "",
+        convincePitch: pick.convincePitch,
+        malId: pick.resultMalId,
+        imdbId: null,
       };
     }
 
@@ -65,5 +68,8 @@ export const getResult = createServerFn({ method: "GET" })
       rating: omdb.imdbRating,
       type,
       rationale: pick.rationale ?? "",
+      convincePitch: pick.convincePitch,
+      imdbId: pick.resultImdbId || omdb.imdbID || null,
+      malId: null,
     };
   });

@@ -150,6 +150,50 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
 
               <Button
                 variant="vapor"
+                onClick={() => {
+                  openWindow({
+                    id: "convince-window",
+                    title: "PITCH.TXT - Notepad",
+                    componentType: "convince",
+                    x: typeof window !== "undefined" ? window.innerWidth / 2 - 225 : 200,
+                    y: typeof window !== "undefined" ? window.innerHeight / 2 - 125 : 200,
+                    width: 450,
+                    height: 250,
+                    props: { sessionId }
+                  });
+                }}
+                className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
+              >
+                CONVINCE ME
+              </Button>
+
+              <Button
+                variant="vapor"
+                onClick={() => {
+                  openWindow({
+                    id: "share-window",
+                    title: "SHARE.EXE",
+                    componentType: "share",
+                    x: typeof window !== "undefined" ? window.innerWidth / 2 - 210 : 200,
+                    y: typeof window !== "undefined" ? window.innerHeight / 2 - 190 : 200,
+                    width: 420,
+                    height: 380,
+                    props: {
+                      title: result.title,
+                      year: result.year,
+                      type: result.type,
+                      imdbId: result.imdbId,
+                      malId: result.malId,
+                    }
+                  });
+                }}
+                className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
+              >
+                SHARE CARD
+              </Button>
+
+              <Button
+                variant="vapor"
                 onClick={() => navigate({ to: "/ask" })}
                 className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
               >

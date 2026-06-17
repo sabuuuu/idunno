@@ -24,4 +24,7 @@ export interface MediaResult {
   rating: string;
   type: "movie" | "tv" | "anime";
   rationale: string;
+  convincePitch?: string | null;
+  imdbId?: string | null;
+  malId?: number | null;
 }

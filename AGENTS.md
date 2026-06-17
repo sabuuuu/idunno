@@ -149,6 +149,9 @@ Each rule belongs to a category and is labeled with a prefix:
 - Use shadcn/ui components as the primary component library
 - Follow modern UI/UX best practices with Tailwind CSS
 - Prefer shadcn/ui primitives over custom components when available
+- Always use Tailwind CSS classes; NEVER write inline CSS styling.
+- Always use CSS variables and theme rules defined in the stylesheet (e.g., `app.css`). NEVER use arbitrary values (like `text-[11px]`) or hardcode hex values when existing Tailwind/theme tokens (like `text-xs`) are available.
+- Always follow the existing project theme structure and use the existing styled components from shadcn.
 
 ## Development Philosophy
 

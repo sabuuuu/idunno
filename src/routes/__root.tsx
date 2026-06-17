@@ -30,7 +30,7 @@ export const Route = createRootRoute({
       ...seo({
         title: "Idonnu — find something worth watching",
         description:
-          "Answer three questions. Get one perfect recommendation. No scrolling required.",
+          "Answer five questions. Get one perfect recommendation. No scrolling required.",
       }),
     ],
     links: [

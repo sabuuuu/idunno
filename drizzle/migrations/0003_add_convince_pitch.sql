@@ -1,0 +1,1 @@
+ALTER TABLE "picks" ADD COLUMN IF NOT EXISTS "convince_pitch" text;

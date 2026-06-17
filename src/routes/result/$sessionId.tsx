@@ -54,7 +54,7 @@ function ResultErrorBoundary({ error }: ErrorComponentProps) {
       <ErrorWindow
         message="Something went wrong."
         subtitle={error instanceof Error ? error.message : "an unexpected error occurred ♡"}
-        body="We hit a snag on our end. Try again or start fresh — your next recommendation is just three questions away."
+        body="We hit a snag on our end. Try again or start fresh — your next recommendation is just five questions away."
         primaryLabel="TRY AGAIN ▶"
         onPrimary={() => router.invalidate()}
         secondaryLabel="START OVER ↺"

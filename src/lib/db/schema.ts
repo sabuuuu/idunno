@@ -34,6 +34,7 @@ export const picks = pgTable("picks", {
   resultType: text("result_type"),
   rationale: text("rationale"),
   feedback: smallint("feedback"),
+  convincePitch: text("convince_pitch"),
   inWatchlist: boolean("in_watchlist").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
