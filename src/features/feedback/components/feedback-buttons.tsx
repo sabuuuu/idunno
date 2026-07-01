@@ -11,11 +11,13 @@ import { Button } from "~/components/ui/button";
 
 interface FeedbackButtonsProps {
   sessionId: string;
+  initialFeedback?: number | null;
+  onFeedbackSubmitted?: () => void;
 }
 
-export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
+export function FeedbackButtons({ sessionId, initialFeedback, onFeedbackSubmitted }: FeedbackButtonsProps) {
   const { mutate, data, isPending } = useFeedback();
-  const submitted = data?.ok === true;
+  const submitted = data?.ok === true || (initialFeedback !== null && initialFeedback !== undefined);
 
   const { data: user } = useQuery({
     queryKey: ["session-user"],
@@ -31,7 +33,10 @@ export function FeedbackButtons({ sessionId }: FeedbackButtonsProps) {
     mutate(
       { sessionId, value },
       {
-        onSuccess: () => toast.success("Thanks for the feedback."),
+        onSuccess: () => {
+          toast.success("Thanks for the feedback.");
+          onFeedbackSubmitted?.();
+        },
         onError:   (err) => toast.error(err.message),
       },
     );

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getSessionUserServerFn } from "~/server/auth";
 import { useWindowManager } from "~/components/desktop/useWindowManager";
+import React from "react";
 
 const TYPE_LABEL: Record<MediaResult["type"], string> = {
   movie: "MOVIE",
@@ -44,6 +45,7 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
     queryKey: ["session-user"],
     queryFn: () => getSessionUserServerFn(),
   });
+  const [isWatchlisted, setIsWatchlisted] = React.useState(result.inWatchlist ?? false);
   const hasPoster = Boolean(result.poster && result.poster !== "N/A");
 
   return (
@@ -127,26 +129,29 @@ export function ResultCard({ result, sessionId }: ResultCardProps) {
             </p>
           )}
           <div className="mt-auto pt-4 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-vapor-rose/30">
-            <FeedbackButtons sessionId={sessionId} />
+            <FeedbackButtons sessionId={sessionId} initialFeedback={result.feedback} />
             <div className="flex gap-2">
-              <Button
-                variant="vapor"
-                onClick={async () => {
-                  if (!user) {
-                    openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 });
-                    return;
-                  }
-                  try {
-                    await toggleWatchlist({ data: { sessionId, inWatchlist: true } });
-                    toast.success("Added to watchlist");
-                  } catch (e) {
-                    toast.error((e as Error).message || "Failed to add to watchlist");
-                  }
-                }}
-                className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
-              >
-                + WATCHLIST
-              </Button>
+              {!isWatchlisted && (
+                <Button
+                  variant="vapor"
+                  onClick={async () => {
+                    if (!user) {
+                      openWindow({ id: "login-window", title: "LOGIN.EXE", componentType: "login", x: typeof window !== "undefined" ? window.innerWidth / 2 - 175 : 200, y: typeof window !== "undefined" ? window.innerHeight / 2 - 150 : 200, width: 350, height: 300 });
+                      return;
+                    }
+                    try {
+                      await toggleWatchlist({ data: { sessionId, inWatchlist: true } });
+                      toast.success("Added to watchlist");
+                      setIsWatchlisted(true);
+                    } catch (e) {
+                      toast.error((e as Error).message || "Failed to add to watchlist");
+                    }
+                  }}
+                  className="font-pixel text-micro tracking-wide uppercase h-12 px-3 bg-vapor-muted"
+                >
+                  + WATCHLIST
+                </Button>
+              )}
 
               <Button
                 variant="vapor"

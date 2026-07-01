@@ -27,4 +27,6 @@ export interface MediaResult {
   convincePitch?: string | null;
   imdbId?: string | null;
   malId?: number | null;
+  inWatchlist?: boolean;
+  feedback?: number | null;
 }

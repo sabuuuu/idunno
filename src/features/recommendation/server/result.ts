@@ -47,6 +47,8 @@ export const getResult = createServerFn({ method: "GET" })
         convincePitch: pick.convincePitch,
         malId: pick.resultMalId,
         imdbId: null,
+        inWatchlist: pick.inWatchlist,
+        feedback: pick.feedback,
       };
     }
 
@@ -71,5 +73,7 @@ export const getResult = createServerFn({ method: "GET" })
       convincePitch: pick.convincePitch,
       imdbId: pick.resultImdbId || omdb.imdbID || null,
       malId: null,
+      inWatchlist: pick.inWatchlist,
+      feedback: pick.feedback,
     };
   });
