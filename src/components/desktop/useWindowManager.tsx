@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 export interface WindowState {
   id: string;
   title: string;
-  componentType: "ask" | "result" | "aesthetic" | "generic" | "display" | "login" | "logout" | "folder" | "music" | "share" | "convince";
+  componentType: "ask" | "result" | "aesthetic" | "generic" | "display" | "login" | "logout" | "folder" | "music" | "share" | "convince" | "result-detail";
   props?: Record<string, unknown>;
   x: number;
   y: number;

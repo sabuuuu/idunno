@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DisplayPropertiesWindow } from "./DisplayPropertiesWindow";
 import { ShareDialog } from "~/features/recommendation/components/share-dialog";
 import { ConvinceWindow } from "~/features/recommendation/components/convince-window";
+import { ResultDetailWindow } from "~/features/recommendation/components/result-detail-window";
 
 function TopBar() {
   return (
@@ -282,6 +283,12 @@ function DesktopContent({ children }: { children: React.ReactNode }) {
             )}
             {win.componentType === "convince" && (
               <ConvinceWindow
+                id={win.id}
+                sessionId={win.props?.sessionId as string}
+              />
+            )}
+            {win.componentType === "result-detail" && (
+              <ResultDetailWindow
                 id={win.id}
                 sessionId={win.props?.sessionId as string}
               />

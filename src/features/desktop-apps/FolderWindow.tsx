@@ -74,9 +74,16 @@ export function FolderWindow({ id: _id, folderType = "history" }: FolderWindowPr
               onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
               onDoubleClick={(e) => {
                 e.stopPropagation();
-                if (item.resultImdbId) {
-                  window.open(`https://www.imdb.com/title/${item.resultImdbId}`, "_blank");
-                }
+                openWindow({
+                  id: `result-${item.id}`,
+                  title: `INFO: ${item.title}`,
+                  componentType: "result-detail",
+                  x: typeof window !== "undefined" ? Math.max(0, (window.innerWidth - 1000) / 2) : 100,
+                  y: typeof window !== "undefined" ? Math.max(20, (window.innerHeight - 700) / 2 - 40) : 50,
+                  width: 1000,
+                  height: 700,
+                  props: { sessionId: item.id }
+                });
               }}
             >
               <div className={`w-10 h-10 p-1 flex items-center justify-center [image-rendering:pixelated] ${selectedId === item.id ? "bg-win98-blue/30" : ""}`}>
