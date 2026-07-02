@@ -12,8 +12,8 @@ export function ProgressDots({ total, current }: ProgressDotsProps) {
           style={{
             width: "12px",
             height: "12px",
-            backgroundColor: i <= current ? "#b76e79" : "transparent",
-            border: "2px solid #b76e79",
+            backgroundColor: i <= current ? "var(--vapor-rose)" : "transparent",
+            border: "2px solid var(--vapor-rose)",
             transition: "background-color 0.2s",
           }}
         />

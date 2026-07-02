@@ -24,7 +24,7 @@
 .dot-grid {
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(#B76E79 1px, transparent 1px);
+  background-image: radial-gradient(var(--vapor-rose) 1px, transparent 1px);
   background-size: 20px 20px;
   opacity: 0.12;
   pointer-events: none;
@@ -63,12 +63,12 @@
 /* ─── Pixel / retro utilities ─────────────────────────────────────── */
 
 .pixel-border {
-  border: 2px solid #B76E79;
+  border: 2px solid var(--vapor-rose);
 }
 
 /* Hard offset shadow — the signature retro look */
 .pixel-shadow {
-  box-shadow: 4px 4px 0px 0px #B76E79;
+  box-shadow: 4px 4px 0px 0px var(--vapor-rose);
 }
 
 /* Offset shadow pressed-state */
@@ -142,14 +142,14 @@
   --radius-2xl: calc(var(--radius) * 1.8);
 
   /* Retro Custom Tokens */
-  --color-vapor-cream: #f4eceb;
-  --color-vapor-dark: #1c1b1b;
-  --color-vapor-rose-dark: #8a4853;
-  --color-vapor-rose: #b76e79;
-  --color-vapor-pink: #d4a0a8;
-  --color-vapor-muted: #c9858e;
-  --color-vapor-tag: #605b5a;
-  --color-win98-blue: #000080;
+  --color-vapor-cream: var(--vapor-cream);
+  --color-vapor-dark: var(--vapor-dark);
+  --color-vapor-rose-dark: var(--vapor-rose-dark);
+  --color-vapor-rose: var(--vapor-rose);
+  --color-vapor-pink: var(--vapor-pink);
+  --color-vapor-muted: var(--vapor-muted);
+  --color-vapor-tag: var(--vapor-tag);
+  --color-win98-blue: var(--win98-blue);
   
   --font-pixel: 'Press Start 2P', monospace;
   --font-retro: 'VT323', monospace;
@@ -157,9 +157,9 @@
   --text-xxs: 0.625rem; /* 10px */
   --text-micro: 0.4375rem; /* 7px */
 
-  --shadow-win98-out: inset 1px 1px 0 #f4eceb, inset -1px -1px 0 #7a4a52;
-  --shadow-win98-in: inset 1px 1px 0 #1c1b1b, inset -1px -1px 0 #e0aeb6;
-  --shadow-win98-active: inset 1px 1px 0 #7a4a52, inset -1px -1px 0 #f4eceb;
+  --shadow-win98-out: var(--shadow-out);
+  --shadow-win98-in: var(--shadow-in);
+  --shadow-win98-active: var(--shadow-active);
   --shadow-pixel: 2px 2px 0px rgba(0,0,0,0.2);
 }
 
@@ -195,6 +195,21 @@
   --ring:                #B76E79;
 
   --radius: 0.25rem;                       /* tighter corners = more retro */
+
+  /* Vapor Custom Tokens */
+  --vapor-cream: #f4eceb;
+  --vapor-dark: #1c1b1b;
+  --vapor-rose-dark: #8a4853;
+  --vapor-rose: #b76e79;
+  --vapor-pink: #d4a0a8;
+  --vapor-muted: #c9858e;
+  --vapor-tag: #605b5a;
+  --win98-blue: #000080;
+
+  /* Default Windows 98 Border Shadows */
+  --shadow-out: inset 1px 1px 0 var(--vapor-cream), inset -1px -1px 0 var(--vapor-rose-dark);
+  --shadow-in: inset 1px 1px 0 var(--vapor-dark), inset -1px -1px 0 var(--vapor-pink);
+  --shadow-active: inset 1px 1px 0 var(--vapor-rose-dark), inset -1px -1px 0 var(--vapor-cream);
 }
 
 /* ─── Base layer ──────────────────────────────────────────────────── */
@@ -253,26 +268,52 @@
     --border: #81b7d2;
     --input: #ffdac1;
     --ring: #b5ead7;
+
+    --vapor-cream: #ffdac1;
+    --vapor-dark: #4a0e4e;
+    --vapor-rose-dark: #81b7d2;
+    --vapor-rose: #ffb7b2;
+    --vapor-pink: #e2f0cb;
+    --vapor-muted: #b5ead7;
+    --vapor-tag: #81b7d2;
+    --win98-blue: #81b7d2;
+
+    --shadow-out: inset 1px 1px 0 var(--vapor-cream), inset -1px -1px 0 var(--vapor-rose-dark);
+    --shadow-in: inset 1px 1px 0 var(--vapor-dark), inset -1px -1px 0 var(--vapor-pink);
+    --shadow-active: inset 1px 1px 0 var(--vapor-rose-dark), inset -1px -1px 0 var(--vapor-cream);
   }
 
-  body.theme-matrix {
+  body.theme-bw {
     --background: #000000;
-    --foreground: #00ff00;
-    --card: #0a0a0a;
-    --card-foreground: #00ff00;
-    --popover: #0a0a0a;
-    --popover-foreground: #00ff00;
-    --primary: #008f11;
-    --primary-foreground: #00ff00;
-    --secondary: #003b00;
-    --secondary-foreground: #00ff00;
-    --muted: #001f00;
-    --muted-foreground: #008f11;
-    --accent: #00ff41;
-    --accent-foreground: #000000;
-    --border: #008f11;
-    --input: #001f00;
-    --ring: #00ff41;
+    --foreground: #ffffff;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
+    --primary: #000000;
+    --primary-foreground: #ffffff;
+    --secondary: #ffffff;
+    --secondary-foreground: #000000;
+    --muted: #e0e0e0;
+    --muted-foreground: #666666;
+    --accent: #000000;
+    --accent-foreground: #ffffff;
+    --border: #000000;
+    --input: #ffffff;
+    --ring: #000000;
+
+    --vapor-cream: #ffffff;
+    --vapor-dark: #000000;
+    --vapor-rose-dark: #000000;
+    --vapor-rose: #888888;
+    --vapor-pink: #dddddd;
+    --vapor-muted: #888888;
+    --vapor-tag: #666666;
+    --win98-blue: #000000;
+
+    --shadow-out: inset 1px 1px 0 var(--vapor-cream), inset -1px -1px 0 var(--vapor-rose-dark);
+    --shadow-in: inset 1px 1px 0 var(--vapor-dark), inset -1px -1px 0 var(--vapor-pink);
+    --shadow-active: inset 1px 1px 0 var(--vapor-rose-dark), inset -1px -1px 0 var(--vapor-cream);
   }
   
   body.theme-win98 {
@@ -293,6 +334,19 @@
     --border: #808080;
     --input: #ffffff;
     --ring: #000000;
+
+    --vapor-cream: #ffffff;
+    --vapor-dark: #000000;
+    --vapor-rose-dark: #808080;
+    --vapor-rose: #c0c0c0;
+    --vapor-pink: #d4d0c8;
+    --vapor-muted: #808080;
+    --vapor-tag: #808080;
+    --win98-blue: #000080;
+
+    --shadow-out: inset 1px 1px 0 var(--vapor-cream), inset -1px -1px 0 var(--vapor-rose-dark);
+    --shadow-in: inset 1px 1px 0 var(--vapor-dark), inset -1px -1px 0 var(--vapor-pink);
+    --shadow-active: inset 1px 1px 0 var(--vapor-rose-dark), inset -1px -1px 0 var(--vapor-cream);
   }
 
   .using-mouse * {
@@ -309,48 +363,48 @@
 
 /* Track — the sunken groove */
 ::-webkit-scrollbar-track {
-  background-color: #d4a0a8;
+  background-color: var(--vapor-pink);
   box-shadow:
-    inset 1px 1px 0px #7a4a52,
-    inset -1px -1px 0px #f4eceb;
+    inset 1px 1px 0px var(--vapor-rose-dark),
+    inset -1px -1px 0px var(--vapor-cream);
 }
 
 /* Thumb — the raised draggable handle */
 ::-webkit-scrollbar-thumb {
-  background-color: #b76e79;
-  border: 1px solid #1c1b1b;
+  background-color: var(--vapor-rose);
+  border: 1px solid var(--vapor-dark);
   box-shadow:
-    inset 1px 1px 0px #f4eceb,
-    inset -1px -1px 0px #7a4a52,
-    inset 2px 2px 0px #d4a0a8,
-    inset -2px -2px 0px #8a4853;
+    inset 1px 1px 0px var(--vapor-cream),
+    inset -1px -1px 0px var(--vapor-rose-dark),
+    inset 2px 2px 0px var(--vapor-pink),
+    inset -2px -2px 0px var(--vapor-rose-dark);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #8a4853;
+  background-color: var(--vapor-rose-dark);
 }
 
 ::-webkit-scrollbar-thumb:active {
   box-shadow:
-    inset 1px 1px 0px #7a4a52,
-    inset -1px -1px 0px #f4eceb,
-    inset 2px 2px 0px #8a4853;
+    inset 1px 1px 0px var(--vapor-rose-dark),
+    inset -1px -1px 0px var(--vapor-cream),
+    inset 2px 2px 0px var(--vapor-rose-dark);
 }
 
 /* Corner where horizontal and vertical bars meet */
 ::-webkit-scrollbar-corner {
-  background-color: #d4a0a8;
+  background-color: var(--vapor-pink);
 }
 
 /* Arrow buttons at each end of the scrollbar */
 ::-webkit-scrollbar-button {
-  background-color: #d4a0a8;
-  border: 1px solid #1c1b1b;
+  background-color: var(--vapor-pink);
+  border: 1px solid var(--vapor-dark);
   box-shadow:
-    inset 1px 1px 0px #f4eceb,
-    inset -1px -1px 0px #7a4a52,
-    inset 2px 2px 0px #d4a0a8,
-    inset -2px -2px 0px #8a4853;
+    inset 1px 1px 0px var(--vapor-cream),
+    inset -1px -1px 0px var(--vapor-rose-dark),
+    inset 2px 2px 0px var(--vapor-pink),
+    inset -2px -2px 0px var(--vapor-rose-dark);
   display: block;
   width: 16px;
   height: 16px;
@@ -358,9 +412,9 @@
 
 ::-webkit-scrollbar-button:active {
   box-shadow:
-    inset 1px 1px 0px #7a4a52,
-    inset -1px -1px 0px #f4eceb,
-    inset 2px 2px 0px #8a4853;
+    inset 1px 1px 0px var(--vapor-rose-dark),
+    inset -1px -1px 0px var(--vapor-cream),
+    inset 2px 2px 0px var(--vapor-rose-dark);
 }
 
 /* Vertical — up arrow */
@@ -380,5 +434,5 @@
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #b76e79 #d4a0a8;
+  scrollbar-color: var(--vapor-rose) var(--vapor-pink);
 }

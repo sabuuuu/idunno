@@ -21,9 +21,16 @@ const AUDIO_TRACKS = [
   { label: "None", src: null },
 ];
 
+const THEMES = [
+  { id: "default", name: "Warm Cream (Default)" },
+  { id: "vaporwave", name: "Vaporwave Dream" },
+  { id: "bw", name: "Black & White" },
+  { id: "win98", name: "Windows 98 Classic" },
+];
+
 export function DisplayPropertiesWindow() {
-  const { wallpaperSrc, setWallpaperSrc, bgAudioUrl, setBgAudioUrl, bgAudioVolume, setBgAudioVolume } = useWindowManager();
-  const [activeTab, setActiveTab] = useState<"background" | "audio">("background");
+  const { wallpaperSrc, setWallpaperSrc, bgAudioUrl, setBgAudioUrl, bgAudioVolume, setBgAudioVolume, theme, setTheme } = useWindowManager();
+  const [activeTab, setActiveTab] = useState<"background" | "appearance" | "audio">("background");
 
   return (
     <div className="flex flex-col h-full bg-vapor-cream text-vapor-dark p-2 font-sans text-sm">
@@ -32,14 +39,21 @@ export function DisplayPropertiesWindow() {
       <div className="flex gap-1 border-b border-vapor-dark mb-4">
         <Button
           variant="ghost"
-          className={`h-auto rounded-none px-3 py-1 text-xs border border-b-0 border-vapor-dark hover:bg-vapor-cream ${activeTab === "background" ? "bg-vapor-cream font-bold z-10 -mb-px pb-[5px]" : "bg-vapor-pink mt-1"}`}
+          className={`h-auto rounded-none px-3 py-1 text-xs border border-b-0 border-vapor-dark text-vapor-dark hover:text-vapor-dark hover:bg-vapor-cream ${activeTab === "background" ? "bg-vapor-cream font-bold z-10 -mb-px pb-[5px]" : "bg-vapor-pink mt-1"}`}
           onClick={() => setActiveTab("background")}
         >
           Background
         </Button>
         <Button
           variant="ghost"
-          className={`h-auto rounded-none px-3 py-1 text-xs border border-b-0 border-vapor-dark hover:bg-vapor-cream ${activeTab === "audio" ? "bg-vapor-cream font-bold z-10 -mb-px pb-[5px]" : "bg-vapor-pink mt-1"}`}
+          className={`h-auto rounded-none px-3 py-1 text-xs border border-b-0 border-vapor-dark text-vapor-dark hover:text-vapor-dark hover:bg-vapor-cream ${activeTab === "appearance" ? "bg-vapor-cream font-bold z-10 -mb-px pb-[5px]" : "bg-vapor-pink mt-1"}`}
+          onClick={() => setActiveTab("appearance")}
+        >
+          Appearance
+        </Button>
+        <Button
+          variant="ghost"
+          className={`h-auto rounded-none px-3 py-1 text-xs border border-b-0 border-vapor-dark text-vapor-dark hover:text-vapor-dark hover:bg-vapor-cream ${activeTab === "audio" ? "bg-vapor-cream font-bold z-10 -mb-px pb-[5px]" : "bg-vapor-pink mt-1"}`}
           onClick={() => setActiveTab("audio")}
         >
           Audio
@@ -88,6 +102,56 @@ export function DisplayPropertiesWindow() {
               </div>
               <span className="text-xxs text-vapor-rose-dark font-pixel">
                 PREVIEW
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "appearance" && (
+        <div className="flex flex-col gap-4 px-2">
+          <div>
+            <p className="text-xs mb-3 text-vapor-dark opacity-80">Select a color scheme for your retro desktop.</p>
+          </div>
+
+          <div className="flex gap-4 h-48">
+            {/* List of themes */}
+            <div className="w-1/2 overflow-y-auto border-2 border-vapor-rose-dark shadow-win98-in bg-white">
+              {THEMES.map((t) => {
+                const isSelected = theme === t.id;
+                return (
+                  <Button
+                    key={t.id}
+                    variant="ghost"
+                    className={`h-auto rounded-none justify-start w-full text-left px-2 py-1 flex items-center gap-2 hover:bg-vapor-rose-dark hover:text-white ${isSelected ? "bg-vapor-rose-dark text-white" : "bg-transparent text-vapor-dark"}`}
+                    onClick={() => setTheme(t.id)}
+                  >
+                    <span className="text-xs font-mono">
+                      {isSelected ? "▶" : " "}
+                    </span>
+                    {t.name}
+                  </Button>
+                );
+              })}
+            </div>
+
+            {/* Preview Theme box */}
+            <div className="w-1/2 flex items-center justify-center flex-col gap-2">
+              <div className="relative w-32 h-24 border-2 border-vapor-dark bg-vapor-pink flex flex-col items-center justify-between p-2 shadow-pixel overflow-hidden">
+                {/* Simulated window in preview */}
+                <div className="w-full bg-vapor-cream border border-vapor-dark flex flex-col">
+                  <div className="bg-linear-to-r from-vapor-rose-dark to-vapor-rose text-white text-[6px] px-1 py-0.5 flex justify-between font-pixel">
+                    <span>PREVIEW.EXE</span>
+                    <span>×</span>
+                  </div>
+                  <div className="p-1 text-[6px] text-vapor-dark font-sans bg-vapor-cream min-h-[20px]">
+                    Hello retro world!
+                  </div>
+                </div>
+                <div className="absolute inset-0 border-4 border-vapor-cream mix-blend-overlay pointer-events-none" />
+              </div>
+              <span className="text-xxs text-vapor-rose-dark font-pixel">
+                THEME PREVIEW
               </span>
             </div>
           </div>

@@ -73,11 +73,11 @@ function RootDocument({ children: _children }: { children: React.ReactNode }) {
               style: {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: "12px",
-                border: "2px solid #B76E79",
-                boxShadow: "4px 4px 0px #B76E79",
+                border: "2px solid var(--vapor-rose)",
+                boxShadow: "4px 4px 0px var(--vapor-rose)",
                 borderRadius: "0",
-                background: "#F4ECEB",
-                color: "#1c1b1b",
+                background: "var(--background)",
+                color: "var(--foreground)",
               },
             }}
           />

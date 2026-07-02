@@ -82,9 +82,9 @@ export function Window({ window: win, children }: { window: WindowState; childre
       className={`absolute flex flex-col`}
       style={{
         ...style,
-        backgroundColor: "#d4a0a8",
-        boxShadow: "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52, 2px 2px 10px rgba(0,0,0,0.5)",
-        border: "1px solid #1c1b1b",
+        backgroundColor: "var(--vapor-pink)",
+        boxShadow: "var(--shadow-out), 2px 2px 10px rgba(0,0,0,0.5)",
+        border: "1px solid var(--vapor-dark)",
       }}
       onMouseDown={() => focusWindow(win.id)}
     >
@@ -92,9 +92,9 @@ export function Window({ window: win, children }: { window: WindowState; childre
         className="flex items-center justify-between px-1 gap-2 m-0.5"
         style={{
           height: "22px",
-          backgroundColor: win.isFocused ? undefined : "var(--color-vapor-muted)", // unfocused background
-          background: win.isFocused ? "linear-gradient(to right, #8a4853, #b76e79)" : undefined,
-          boxShadow: win.isFocused ? "inset 1px 1px 0px #f4eceb, inset -1px -1px 0px #7a4a52" : "inset 1px 1px 0px #e0aeb6, inset -1px -1px 0px #7a4a52",
+          backgroundColor: win.isFocused ? undefined : "var(--vapor-muted)", // unfocused background
+          background: win.isFocused ? "linear-gradient(to right, var(--vapor-rose-dark), var(--vapor-rose))" : undefined,
+          boxShadow: "var(--shadow-out)",
         }}
         onMouseDown={(e) => {
           if (win.isMaximized) return; // Don't drag if maximized
@@ -104,7 +104,7 @@ export function Window({ window: win, children }: { window: WindowState; childre
         }}
       >
         <div className="flex items-center gap-2 flex-1 min-w-0 px-2 select-none">
-          <span style={{ fontSize: "10px", lineHeight: 1, color: win.isFocused ? "#fff" : "#1c1b1b" }} aria-hidden="true">♡</span>
+          <span style={{ fontSize: "10px", lineHeight: 1, color: win.isFocused ? "#fff" : "var(--vapor-dark)" }} aria-hidden="true">♡</span>
           <span
             className="leading-none truncate"
             style={{
@@ -112,7 +112,7 @@ export function Window({ window: win, children }: { window: WindowState; childre
               fontSize: "8px",
               fontWeight: 700,
               letterSpacing: "0.05em",
-              color: win.isFocused ? "#ffffff" : "#1c1b1b"
+              color: win.isFocused ? "#ffffff" : "var(--vapor-dark)"
             }}
           >
             {win.title}
@@ -150,7 +150,7 @@ export function Window({ window: win, children }: { window: WindowState; childre
           }}
         >
           <div className="w-2 h-2" style={{
-            background: `linear-gradient(135deg, transparent 50%, #8a4853 50%)`
+            background: `linear-gradient(135deg, transparent 50%, var(--vapor-rose-dark) 50%)`
           }} />
         </div>
       )}

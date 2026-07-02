@@ -39,7 +39,7 @@ export function ErrorWindow({
         <div
           key={i}
           aria-hidden="true"
-          style={{ position: "absolute", left, top, fontSize: `${size}px`, color: "#b76e79", opacity, pointerEvents: "none", userSelect: "none", fontFamily: "'Press Start 2P', monospace", zIndex: 1 }}
+          style={{ position: "absolute", left, top, fontSize: `${size}px`, color: "var(--vapor-rose)", opacity, pointerEvents: "none", userSelect: "none", fontFamily: "'Press Start 2P', monospace", zIndex: 1 }}
         >
           {glyph}
         </div>
